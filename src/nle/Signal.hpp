@@ -9,23 +9,23 @@
 
 namespace nle
 {
-    template <typename T>
+    template <typename T, typename ...ExtraArgs>
     class Signal
     {
     public:
-        typedef std::function<void(const T &)> callback_t;
+        typedef std::function<void(const T & message, ExtraArgs... extraArgs)> callback_t;
 
         Signal()
         {
         }
 
-        void emit(const T &message)
+        void emit(const T &message, ExtraArgs... args)
         {
             for (const auto &it : m_callbacks)
             {
                 try
                 {
-                    std::thread(it, message).detach();
+                    std::thread(it, message, args...).detach();
                 }
                 catch (const std::exception &e)
                 {
