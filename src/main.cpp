@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	app.currentScene()->light()->setEnabled(true);
 
 	app.textureFactory()->load("models/hasan/hasan.jpg", "hasan");
-	app.physicsEngine()->attachPhysicsCallback([&](nle::Object3D *o, double delta){
+	app.physicsEngine()->bindPhysicsCallback([&](nle::Object3D *o, double delta){
 		nle::Scene * s = dynamic_cast<nle::Scene*>(o->root());
 		if(s)
 		{

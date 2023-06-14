@@ -36,7 +36,7 @@ namespace nle
         ~PhysicsEngine();
         void attachPhysicsBody(Object3D *body);
         void detachPhsicsBody(Object3D *body);
-        void attachPhysicsCallback(std::function<void(Object3D* object, double delta)> callback);
+        void bindPhysicsCallback(std::function<void(Object3D* object, double delta)> callback);
         void pause();
     };
 } // namespace nle

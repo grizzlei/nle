@@ -40,7 +40,7 @@ namespace nle
         }
     }
 
-    void PhysicsEngine::attachPhysicsCallback(std::function<void(Object3D * object, double delta)> callback)
+    void PhysicsEngine::bindPhysicsCallback(std::function<void(Object3D * object, double delta)> callback)
     {
         m_onPhysicsProcess.bindCallback(callback);
     }
@@ -49,8 +49,12 @@ namespace nle
     {
         glm::vec3 d = m_realm->gravity * m_realm->gravityVector * (float)deltaTime;
         body->setVelocity(body->velocity() + d);
-        m_onPhysicsProcess.emit(dynamic_cast<Scene*>(body->root()), deltaTime);
+
+        // @TODO: check for collisions and move if there's no obstacle
+
         body->setPosition(body->position() + body->velocity());
+
+        m_onPhysicsProcess.emit(dynamic_cast<Scene*>(body->root()), deltaTime);
     }
 
     void PhysicsEngine::processRecursively(Object3D *root, double deltaTime)
@@ -78,7 +82,7 @@ namespace nle
                 }
 
                 p->m_physicsTimestamp = get_time_sec();
-                // 60 fps constant physics processing.
+                // 60 hertz constant physics processing.
                 std::this_thread::sleep_for(std::chrono::microseconds(NLE_PHYSICS_PROCESS_SLEEP_TIME));
             }
         }
