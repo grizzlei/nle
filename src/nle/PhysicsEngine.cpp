@@ -49,10 +49,8 @@ namespace nle
     {
         glm::vec3 d = m_realm->gravity * m_realm->gravityVector * (float)deltaTime;
         body->setVelocity(body->velocity() + d);
-        // m_onPhysicsProcess.emit(dynamic_cast<Scene*>(body->root()), delta);
         m_onPhysicsProcess.emit(dynamic_cast<Scene*>(body->root()), deltaTime);
-        // if(body->position().y > 0.f)
-        //     body->setPosition(body->position() + body->velocity());
+        body->setPosition(body->position() + body->velocity());
     }
 
     void PhysicsEngine::processRecursively(Object3D *root, double deltaTime)

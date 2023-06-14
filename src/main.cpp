@@ -30,8 +30,6 @@ int main(int argc, char *argv[])
 		}
 	});
 	
-	nle::Shader grid("shader/grid.vert", "shader/grid.frag", true);
-	
 	nle::ModelOBJ modHasan(nle::DEFAULT_SHADER, app.textureFactory()->get("hasan"));
 	if(modHasan.load("models/hasan/hasan.obj"))
 	{
