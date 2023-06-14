@@ -20,6 +20,7 @@ namespace nle
     {
     private:
         Signal<Object3D*, double> m_onPhysicsProcess;
+        Signal<double> m_onPhysicsTick;
         PhysicsRealm *m_realm; // single realm now, multiple in the future
         Scene *m_scene;
         bool m_paused = false;
@@ -36,7 +37,8 @@ namespace nle
         ~PhysicsEngine();
         void attachPhysicsBody(Object3D *body);
         void detachPhsicsBody(Object3D *body);
-        void bindPhysicsCallback(std::function<void(Object3D* object, double delta)> callback);
+        void bindPhysicsProcessCallback(std::function<void(Object3D* object, double delta)> callback);
+        void bindPhysicsTickCallback(std::function<void(double)> callback);
         void pause();
     };
 } // namespace nle

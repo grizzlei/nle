@@ -1,23 +1,23 @@
-#include "ModelObj.h"
+#include "Model.h"
 #include "OBJ_Loader.h"
 
 namespace nle
 {
-    ModelOBJ::ModelOBJ()
+    Model::Model()
     {
     }
 
-    ModelOBJ::ModelOBJ(Shader *shader, Texture *texture)
+    Model::Model(Shader *shader, Texture *texture)
         : m_shader(shader), m_texture(texture)
     {
     }
 
-    ModelOBJ::ModelOBJ(const std::string path)
+    Model::Model(const std::string path)
     {
-        load(path);
+        loadOBJ(path);
     }
 
-    MultiMeshInstance *ModelOBJ::createInstance()
+    MultiMeshInstance *Model::createInstance()
     {
         if(!m_multiMesh)
         {
@@ -29,7 +29,7 @@ namespace nle
         return m_multiMesh->createInstance();
     }
 
-    bool ModelOBJ::load(const std::string &path)
+    bool Model::loadOBJ(const std::string &path)
     {
         objl::Loader loader;
 

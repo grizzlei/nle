@@ -35,14 +35,29 @@ namespace nle
         m_ambientIntensity = intensity;
     }
 
+    float Light::ambientIntensity()
+    {
+        return m_ambientIntensity;
+    }
+
     void Light::setDiffuseIntensity(GLfloat intensity)
     {
         m_diffuseIntensity = intensity;
     }
 
+    float Light::diffuseIntensity()
+    {
+        return m_diffuseIntensity;
+    }
+
     void Light::setSpecularIntensity(GLfloat intensity)
     {
         m_specularIntensity = intensity;
+    }
+
+    float Light::specularIntensity()
+    {
+        return m_specularIntensity;
     }
 
     void Light::setEnabled(bool enabled)

@@ -1,5 +1,5 @@
-#ifndef OBJ_LOADER_H
-#define OBJ_LOADER_H
+#ifndef NLE_MODEL_H
+#define NLE_MODEL_H
 
 #include "Nle.h"
 #include "Mesh.h"
@@ -7,7 +7,7 @@
 
 namespace nle
 {
-    class ModelOBJ
+    class Model
     {
     private:
         std::vector<std::vector<float>> m_vertexGroups;
@@ -19,11 +19,12 @@ namespace nle
         MultiMesh *m_multiMesh = nullptr;
 
     public:
-        ModelOBJ();
-        ModelOBJ(Shader *shader, Texture *texture = nullptr);
-        ModelOBJ(const std::string path);
+        Model();
+        Model(Shader *shader, Texture *texture = nullptr);
+        Model(const std::string path);
         MultiMeshInstance *createInstance();
-        bool load(const std::string &path);
+        bool loadOBJ(const std::string &path);
+        // bool loadGLTF(const std::string& path) .. etc
     };
 } // namespace nle
 

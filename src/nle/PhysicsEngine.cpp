@@ -40,9 +40,14 @@ namespace nle
         }
     }
 
-    void PhysicsEngine::bindPhysicsCallback(std::function<void(Object3D * object, double delta)> callback)
+    void PhysicsEngine::bindPhysicsProcessCallback(std::function<void(Object3D * object, double delta)> callback)
     {
         m_onPhysicsProcess.bindCallback(callback);
+    }
+
+    void PhysicsEngine::bindPhysicsTickCallback(std::function<void(double)> callback)
+    {
+        m_onPhysicsTick.bindCallback(callback);
     }
 
     void PhysicsEngine::process(Object3D *body, double deltaTime)
@@ -54,7 +59,7 @@ namespace nle
 
         body->setPosition(body->position() + body->velocity());
 
-        m_onPhysicsProcess.emit(dynamic_cast<Scene*>(body->root()), deltaTime);
+        m_onPhysicsProcess.emit(body, deltaTime);
     }
 
     void PhysicsEngine::processRecursively(Object3D *root, double deltaTime)
@@ -81,6 +86,7 @@ namespace nle
                     p->processRecursively(i, dtime);
                 }
 
+                p->m_onPhysicsTick.emit(dtime);
                 p->m_physicsTimestamp = get_time_sec();
                 // 60 hertz constant physics processing.
                 std::this_thread::sleep_for(std::chrono::microseconds(NLE_PHYSICS_PROCESS_SLEEP_TIME));
