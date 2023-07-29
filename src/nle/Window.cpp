@@ -26,8 +26,8 @@ namespace nle
         }
 
         glfwSetWindowUserPointer(m_handle, this);
-        glfwSetKeyCallback(m_handle, Window::keyHandler);
-        glfwSetCursorPosCallback(m_handle, Window::mouseHandler);
+        glfwSetKeyCallback(m_handle, Window::key_handler);
+        glfwSetCursorPosCallback(m_handle, Window::mouse_handler);
     }
 
     Window::~Window()
@@ -42,9 +42,9 @@ namespace nle
         {
             glfwGetWindowSize(m_handle, &m_width, &m_height);
 
-            if (m_drawCallback)
+            if (m_draw_callback)
             {
-                m_drawCallback();
+                m_draw_callback();
             }
             
             glfwSwapBuffers(m_handle);
@@ -58,19 +58,19 @@ namespace nle
         // glfwDestroyWindow(m_handle);
     }
 
-    void Window::setDrawCallback(std::function<void()> dcb)
+    void Window::set_draw_callback(std::function<void()> dcb)
     {
-        m_drawCallback = dcb;
+        m_draw_callback = dcb;
     }
 
-    void Window::setCursorVisibility(bool visible)
+    void Window::set_cursor_visibility(bool visible)
     {
         glfwSetInputMode(m_handle, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
     }
 
-    void Window::setFullScreen(bool fullscreen)
+    void Window::set_fullscreen(bool fullscreen)
     {
-        if((m_fullScreen = fullscreen))
+        if((m_fullscreen = fullscreen))
         {
             const GLFWvidmode * vm = glfwGetVideoMode(glfwGetPrimaryMonitor());
             glfwSetWindowMonitor(m_handle, glfwGetPrimaryMonitor(), 0, 0, vm->width, vm->height, vm->refreshRate);
@@ -86,7 +86,7 @@ namespace nle
         return m_closed;
     }
 
-    void Window::keyHandler(GLFWwindow *window, int key, int code, int action, int mode)
+    void Window::key_handler(GLFWwindow *window, int key, int code, int action, int mode)
     {
         Window *w = static_cast<Window *>(glfwGetWindowUserPointer(window));
         if (!w)
@@ -101,13 +101,13 @@ namespace nle
 
         if(key == GLFW_KEY_F && action == GLFW_PRESS)
         {
-            w->setFullScreen(!w->m_fullScreen);
+            w->set_fullscreen(!w->m_fullscreen);
         }
 
         if(key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS)
         {
             bool visible = glfwGetInputMode(w->m_handle, GLFW_CURSOR) == GLFW_CURSOR_NORMAL;
-            w->setCursorVisibility(!visible);
+            w->set_cursor_visibility(!visible);
         }
 
         if (key >= 0 && key < w->m_keys.size())
@@ -123,7 +123,7 @@ namespace nle
         }
     }
 
-    void Window::mouseHandler(GLFWwindow *window, double mouseX, double mouseY)
+    void Window::mouse_handler(GLFWwindow *window, double mouse_x, double mouse_y)
     {
         Window *w = static_cast<Window *>(glfwGetWindowUserPointer(window));
         if (!w)
@@ -131,20 +131,20 @@ namespace nle
             return;
         }
 
-        if (!w->m_mouseMovedOnce)
+        if (!w->m_mouse_moved_once)
         {
-            w->m_mouseLast = {mouseX, mouseY};
-            w->m_mouseMovedOnce = true;
+            w->m_mouse_last = {mouse_x, mouse_y};
+            w->m_mouse_moved_once = true;
             return;
         }
 
-        glm::vec2 now = glm::vec2(mouseX, mouseY);
+        glm::vec2 now = glm::vec2(mouse_x, mouse_y);
 
-        w->m_mouseDelta.x = now.x - w->m_mouseLast.x;
+        w->m_mouse_delta.x = now.x - w->m_mouse_last.x;
         // because y increases going downwards on the screen.
-        w->m_mouseDelta.y = w->m_mouseLast.y - now.y;
+        w->m_mouse_delta.y = w->m_mouse_last.y - now.y;
 
-        w->m_mouseLast = now;
-        // prdbg("mouse dx: %.6f dy: %.6f", w->m_mouseDelta.x, w->m_mouseDelta.y);
+        w->m_mouse_last = now;
+        // prdbg("mouse dx: %.6f dy: %.6f", w->m_mouse_delta.x, w->m_mouse_delta.y);
     }
 } // namespace nle

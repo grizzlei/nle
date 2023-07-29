@@ -12,9 +12,9 @@ namespace nle
     {
     private:
         glm::vec3 m_color;
-        GLfloat m_ambientIntensity;
-        GLfloat m_diffuseIntensity;
-        GLfloat m_specularIntensity;
+        GLfloat m_ambient_intensity;
+        GLfloat m_diffuse_intensity;
+        GLfloat m_specular_intensity;
         
         bool m_enabled = false;
 
@@ -23,16 +23,16 @@ namespace nle
         Light(GLfloat red, GLfloat green, GLfloat blue, GLfloat ambientIntensity,
               GLfloat diffuseIntensity);
         ~Light();
-        void use(GLfloat ambientIntensityLocation, GLfloat ambientColorLocation,
-                 GLfloat diffuseIntensityLocation, GLfloat diffuseDirectionLocation);
-        void setColor(GLfloat red, GLfloat green, GLfloat blue);
-        void setAmbientIntensity(GLfloat intensity);
-        float ambientIntensity();
-        void setDiffuseIntensity(GLfloat intensity);
-        float diffuseIntensity();
-        void setSpecularIntensity(GLfloat intensity);
-        float specularIntensity();
-        void setEnabled(bool enabled);
+        void use(GLfloat ambient_intensity_location, GLfloat ambient_color_location,
+                 GLfloat diffuse_intensity_location, GLfloat diffuse_direction_location);
+        void set_color(GLfloat red, GLfloat green, GLfloat blue);
+        void set_ambient_intensity(GLfloat intensity);
+        float ambient_instensity();
+        void set_diffuse_intensity(GLfloat intensity);
+        float diffuse_intensity();
+        void set_specular_intensity(GLfloat intensity);
+        float specular_intensity();
+        void set_enabled(bool enabled);
         bool enabled();
     };
 } // namespace nle

@@ -22,12 +22,12 @@ namespace nle
     class Mesh
     {
     private:
-        bool m_isAABBMesh = false;
+        bool m_is_AABB_mesh = false;
         unsigned int m_ebo,
             m_vbo,
             m_vao;
 
-        unsigned int m_primitiveType = GL_TRIANGLES;
+        unsigned int m_primitive_type = GL_TRIANGLES;
 
         std::vector<float> m_vertices;
         std::vector<unsigned int> m_indices;
@@ -35,22 +35,22 @@ namespace nle
         Shader *m_shader;
         Texture *m_texture;
 
-        glm::vec3 m_aabbMin;
-        glm::vec3 m_aabbMax;
-        Mesh *m_aabbMesh;
+        glm::vec3 m_aabb_min;
+        glm::vec3 m_aabb_max;
+        Mesh *m_aabb_Mesh;
 
         void load();
 
     public:
-        Mesh(std::vector<float> vertices, std::vector<unsigned int> indices, Shader *shader, Texture *texture = nullptr, bool isAABBMesh = false);
+        Mesh(std::vector<float> vertices, std::vector<unsigned int> indices, Shader *shader, Texture *texture = nullptr, bool is_AABB_mesh = false);
         virtual ~Mesh();
         std::vector<float> *vertices();
         std::vector<unsigned int> *indices();
 
-        void setTexture(Texture *texture);
+        void set_texture(Texture *texture);
         Texture *texture();
         Shader *shader();
-        MeshInstance *createInstance();
+        MeshInstance *create_instance();
 
         friend class Renderer3D;
     };
@@ -60,21 +60,21 @@ namespace nle
     private:
         Mesh *m_mesh;
 
-        uint8_t m_renderLayer;
-        int m_renderMode;
+        uint8_t m_render_layer;
+        int m_render_mode;
         bool m_visible;
 
     public:
         MeshInstance(Mesh *mesh);
         Mesh *mesh();
 
-        void setRenderMode(RenderMode renderMode = RenderMode::Fill);
+        void set_render_mode(RenderMode render_mode = RenderMode::Fill);
 
-        void setVisibile(bool visible);
+        void set_visible(bool visible);
         bool visible() const;
 
-        void setRenderLayer(int layer);
-        int renderLayer() const;
+        void set_render_layer(int layer);
+        int render_layer() const;
 
         friend class Renderer3D;
     };
@@ -88,7 +88,7 @@ namespace nle
         MultiMesh(const std::vector<Mesh *> &meshes = {});
         ~MultiMesh();
         std::vector<Mesh *> *meshes();
-        MultiMeshInstance *createInstance();
+        MultiMeshInstance *create_instance();
     };
 
     class MultiMeshInstance : public Object3D

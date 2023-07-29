@@ -3,64 +3,64 @@
 namespace nle
 {
     Light::Light()
-        : m_color(glm::vec3(1.f)), m_ambientIntensity(1.f), m_diffuseIntensity(1.f)
+        : m_color(glm::vec3(1.f)), m_ambient_intensity(1.f), m_diffuse_intensity(1.f)
     {
-        this->setRotation(glm::vec3(0.f, -1.f, 0.f));
+        this->set_rotation(glm::vec3(0.f, -1.f, 0.f));
     }
 
-    Light::Light(GLfloat red, GLfloat green, GLfloat blue, GLfloat ambientIntensity,
-                 GLfloat diffuseIntensity)
+    Light::Light(GLfloat red, GLfloat green, GLfloat blue, GLfloat ambient_intensity,
+                 GLfloat diffuse_intensity)
     {
         m_color = glm::vec3(red, green, blue);
-        m_ambientIntensity = ambientIntensity;
-        m_diffuseIntensity = diffuseIntensity;
-        this->setRotation(glm::vec3(0.f, -1.f, 0.f));
+        m_ambient_intensity = ambient_intensity;
+        m_diffuse_intensity = diffuse_intensity;
+        this->set_rotation(glm::vec3(0.f, -1.f, 0.f));
     }
 
     Light::~Light()
     {
     }
 
-    void Light::use(GLfloat ambientIntensityLocation, GLfloat ambientColorLocation,
-                    GLfloat diffuseIntensityLocation, GLfloat diffuseDirectionLocation)
+    void Light::use(GLfloat ambient_intensity_location, GLfloat ambient_color_location,
+                    GLfloat diffuse_intensity_location, GLfloat diffuse_direction_location)
     {
-        glUniform3f(ambientColorLocation, m_color.x, m_color.y, m_color.z);
-        glUniform1f(ambientIntensityLocation, m_ambientIntensity);
-        glUniform3f(diffuseDirectionLocation, glm::radians(this->rotation().x), glm::radians(this->rotation().y), glm::radians(this->rotation().z));
-        glUniform1f(diffuseIntensityLocation, m_diffuseIntensity);
+        glUniform3f(ambient_color_location, m_color.x, m_color.y, m_color.z);
+        glUniform1f(ambient_intensity_location, m_ambient_intensity);
+        glUniform3f(diffuse_direction_location, glm::radians(this->rotation().x), glm::radians(this->rotation().y), glm::radians(this->rotation().z));
+        glUniform1f(diffuse_intensity_location, m_diffuse_intensity);
     }
 
-    void Light::setAmbientIntensity(GLfloat intensity)
+    void Light::set_ambient_intensity(GLfloat intensity)
     {
-        m_ambientIntensity = intensity;
+        m_ambient_intensity = intensity;
     }
 
-    float Light::ambientIntensity()
+    float Light::ambient_instensity()
     {
-        return m_ambientIntensity;
+        return m_ambient_intensity;
     }
 
-    void Light::setDiffuseIntensity(GLfloat intensity)
+    void Light::set_diffuse_intensity(GLfloat intensity)
     {
-        m_diffuseIntensity = intensity;
+        m_diffuse_intensity = intensity;
     }
 
-    float Light::diffuseIntensity()
+    float Light::diffuse_intensity()
     {
-        return m_diffuseIntensity;
+        return m_diffuse_intensity;
     }
 
-    void Light::setSpecularIntensity(GLfloat intensity)
+    void Light::set_specular_intensity(GLfloat intensity)
     {
-        m_specularIntensity = intensity;
+        m_specular_intensity = intensity;
     }
 
-    float Light::specularIntensity()
+    float Light::specular_intensity()
     {
-        return m_specularIntensity;
+        return m_specular_intensity;
     }
 
-    void Light::setEnabled(bool enabled)
+    void Light::set_enabled(bool enabled)
     {
         m_enabled = enabled;
     }
@@ -70,7 +70,7 @@ namespace nle
         return m_enabled;
     }
 
-    void Light::setColor(GLfloat red, GLfloat green, GLfloat blue)
+    void Light::set_color(GLfloat red, GLfloat green, GLfloat blue)
     {
         m_color.r = red;
         m_color.g = green;

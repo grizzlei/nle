@@ -12,7 +12,7 @@ namespace nle
     {
     }
 
-    Mesh *Terrain::createTerrainMesh()
+    Mesh *Terrain::create()
     {
         for(unsigned int i = 0; i < m_height; i++)
         {

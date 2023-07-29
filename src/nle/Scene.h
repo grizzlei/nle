@@ -12,15 +12,11 @@ namespace nle
         Camera *m_camera;
         Light *m_light;
 
-        bool m_showGrid;
-
     public:
         Scene();
         virtual ~Scene();
         Camera *camera();
         Light *light();
-        void setGridVisibility(bool visible);
-        bool gridVisibility();
     };
 } // namespace nle
 

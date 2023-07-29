@@ -5,73 +5,73 @@
 namespace nle
 {
     Mesh::Mesh(std::vector<float> vertices, std::vector<unsigned int> indices, Shader *shader, Texture *texture, bool isAABBMesh)
-        : m_vertices(vertices), m_indices(indices), m_shader(shader), m_texture(texture), m_isAABBMesh(isAABBMesh)
+        : m_vertices(vertices), m_indices(indices), m_shader(shader), m_texture(texture), m_is_AABB_mesh(isAABBMesh)
     {
-        if (!m_isAABBMesh)
-        {
-            // compute aabb here.
-            unsigned int blockSize = 8U; // 3 vertices, 3 normals, 2 texture coords
-            unsigned int range = vertices.size() / blockSize;
+        // if (!m_is_AABB_mesh)
+        // {
+        //     // compute aabb here.
+        //     unsigned int block_size = 8U; // 3 vertices, 3 normals, 2 texture coords
+        //     unsigned int range = vertices.size() / block_size;
 
-            m_aabbMax = glm::vec3(std::numeric_limits<float>::min());
-            m_aabbMin = glm::vec3(std::numeric_limits<float>::max());
+        //     m_aabb_max = glm::vec3(std::numeric_limits<float>::min());
+        //     m_aabb_min = glm::vec3(std::numeric_limits<float>::max());
 
-            for (unsigned int i = 0; i < range; i++)
-            {
-                float &vx = m_vertices[blockSize * i];
-                float &vy = m_vertices[blockSize * i + 1];
-                float &vz = m_vertices[blockSize * i + 2];
+        //     for (unsigned int i = 0; i < range; i++)
+        //     {
+        //         float &vx = m_vertices[block_size * i];
+        //         float &vy = m_vertices[block_size * i + 1];
+        //         float &vz = m_vertices[block_size * i + 2];
 
-                if (vx < m_aabbMin.x)
-                {
-                    m_aabbMin.x = vx;
-                }
-                else if (vx > m_aabbMax.x)
-                {
-                    m_aabbMax.x = vx;
-                }
-                if (vy < m_aabbMin.y)
-                {
-                    m_aabbMin.y = vy;
-                }
-                else if (vy > m_aabbMax.y)
-                {
-                    m_aabbMax.y = vy;
-                }
-                if (vz < m_aabbMin.z)
-                {
-                    m_aabbMin.z = vz;
-                }
-                else if (vz > m_aabbMax.z)
-                {
-                    m_aabbMax.z = vz;
-                }
-            }
+        //         if (vx < m_aabb_min.x)
+        //         {
+        //             m_aabb_min.x = vx;
+        //         }
+        //         else if (vx > m_aabb_max.x)
+        //         {
+        //             m_aabb_max.x = vx;
+        //         }
+        //         if (vy < m_aabb_min.y)
+        //         {
+        //             m_aabb_min.y = vy;
+        //         }
+        //         else if (vy > m_aabb_max.y)
+        //         {
+        //             m_aabb_max.y = vy;
+        //         }
+        //         if (vz < m_aabb_min.z)
+        //         {
+        //             m_aabb_min.z = vz;
+        //         }
+        //         else if (vz > m_aabb_max.z)
+        //         {
+        //             m_aabb_max.z = vz;
+        //         }
+        //     }
 
-            // 0 - 1 - 5 - 4 - 0 - 3 - 7 - 4 - 5 - 6 - 7 - 3 - 2 - 6 - 5 - 1 - 2 
-            // -----------------   ---------   ---------  ----------   ---------
-            //     front		      lef        btm         bck        right
-            m_aabbMesh = new Mesh(
-                {
-                    m_aabbMin.x, m_aabbMax.y, m_aabbMax.z, 0.f, 0.f, 0.f, 0.f, 0.f, // top left front,
-                    m_aabbMax.x, m_aabbMax.y, m_aabbMax.z, 0.f, 0.f, 0.f, 0.f, 0.f, // top right front
-                    m_aabbMax.x, m_aabbMax.y, m_aabbMin.z, 0.f, 0.f, 0.f, 0.f, 0.f, // top right back
-                    m_aabbMin.x, m_aabbMax.y, m_aabbMin.z, 0.f, 0.f, 0.f, 0.f, 0.f, // top left back
-                    m_aabbMin.x, m_aabbMin.y, m_aabbMax.z, 0.f, 0.f, 0.f, 0.f, 0.f, // bottom left front
-                    m_aabbMax.x, m_aabbMin.y, m_aabbMax.z, 0.f, 0.f, 0.f, 0.f, 0.f, // bottom right front
-                    m_aabbMax.x, m_aabbMin.y, m_aabbMin.z, 0.f, 0.f, 0.f, 0.f, 0.f, // bottom right back
-                    m_aabbMin.x, m_aabbMin.y, m_aabbMin.z, 0.f, 0.f, 0.f, 0.f, 0.f  // bottom left back
-                },
-                {
-                    0, 1, 5, 4, 0, 3, 7, 4, 5, 6, 7, 3, 2, 6, 5, 1, 2
-                },
-                m_shader,
-                nullptr,
-                true);
+        //     // 0 - 1 - 5 - 4 - 0 - 3 - 7 - 4 - 5 - 6 - 7 - 3 - 2 - 6 - 5 - 1 - 2 
+        //     // -----------------   ---------   ---------  ----------   ---------
+        //     //     front		      lef        btm         bck        right
+        //     m_aabb_Mesh = new Mesh(
+        //         {
+        //             m_aabb_min.x, m_aabb_max.y, m_aabb_max.z, 0.f, 0.f, 0.f, 0.f, 0.f, // top left front,
+        //             m_aabb_max.x, m_aabb_max.y, m_aabb_max.z, 0.f, 0.f, 0.f, 0.f, 0.f, // top right front
+        //             m_aabb_max.x, m_aabb_max.y, m_aabb_min.z, 0.f, 0.f, 0.f, 0.f, 0.f, // top right back
+        //             m_aabb_min.x, m_aabb_max.y, m_aabb_min.z, 0.f, 0.f, 0.f, 0.f, 0.f, // top left back
+        //             m_aabb_min.x, m_aabb_min.y, m_aabb_max.z, 0.f, 0.f, 0.f, 0.f, 0.f, // bottom left front
+        //             m_aabb_max.x, m_aabb_min.y, m_aabb_max.z, 0.f, 0.f, 0.f, 0.f, 0.f, // bottom right front
+        //             m_aabb_max.x, m_aabb_min.y, m_aabb_min.z, 0.f, 0.f, 0.f, 0.f, 0.f, // bottom right back
+        //             m_aabb_min.x, m_aabb_min.y, m_aabb_min.z, 0.f, 0.f, 0.f, 0.f, 0.f  // bottom left back
+        //         },
+        //         {
+        //             0, 1, 5, 4, 0, 3, 7, 4, 5, 6, 7, 3, 2, 6, 5, 1, 2
+        //         },
+        //         m_shader,
+        //         nullptr,
+        //         true);
 
-            m_aabbMesh->m_primitiveType = GL_LINE_STRIP;
-            prdbg("aabb created.");
-        }
+        //     m_aabb_Mesh->m_primitive_type = GL_LINE_STRIP;
+        //     prdbg("aabb created.");
+        // }
 
         load();
     }
@@ -128,7 +128,7 @@ namespace nle
         return &m_indices;
     }
 
-    void Mesh::setTexture(Texture *texture)
+    void Mesh::set_texture(Texture *texture)
     {
         m_texture = texture;
     }
@@ -143,18 +143,18 @@ namespace nle
         return m_shader;
     }
 
-    MeshInstance *Mesh::createInstance()
+    MeshInstance *Mesh::create_instance()
     {
         MeshInstance *mi = new MeshInstance(this);
-        if (!m_isAABBMesh)
+        if (!m_is_AABB_mesh)
         {
-            mi->addChild(this->m_aabbMesh->createInstance());
+            mi->add_child(this->m_aabb_Mesh->create_instance());
         }
         return mi;
     }
 
     MeshInstance::MeshInstance(Mesh *mesh)
-        : m_mesh(mesh), m_visible(true), m_renderLayer(0)
+        : m_mesh(mesh), m_visible(true), m_render_layer(0)
     {
     }
 
@@ -163,19 +163,19 @@ namespace nle
         return m_mesh;
     }
 
-    void MeshInstance::setRenderMode(RenderMode renderMode)
+    void MeshInstance::set_render_mode(RenderMode render_mode)
     {
-        m_renderMode = renderMode;
+        m_render_mode = render_mode;
         for (auto *c : this->children())
         {
             if (MeshInstance *m = dynamic_cast<MeshInstance *>(c))
             {
-                m->setRenderMode(renderMode);
+                m->set_render_mode(render_mode);
             }
         }
     }
 
-    void MeshInstance::setVisibile(bool visible)
+    void MeshInstance::set_visible(bool visible)
     {
         m_visible = visible;
     }
@@ -185,14 +185,14 @@ namespace nle
         return m_visible;
     }
 
-    void MeshInstance::setRenderLayer(int layer)
+    void MeshInstance::set_render_layer(int layer)
     {
-        m_renderLayer = layer;
+        m_render_layer = layer;
     }
 
-    int MeshInstance::renderLayer() const
+    int MeshInstance::render_layer() const
     {
-        return m_renderLayer;
+        return m_render_layer;
     }
 
     MultiMesh::MultiMesh(const std::vector<Mesh *> &meshes)
@@ -213,13 +213,13 @@ namespace nle
         return &m_meshes;
     }
 
-    MultiMeshInstance *MultiMesh::createInstance()
+    MultiMeshInstance *MultiMesh::create_instance()
     {
         MultiMeshInstance *mm = new MultiMeshInstance();
 
         for (auto *i : m_meshes)
         {
-            mm->addChild(i->createInstance());
+            mm->add_child(i->create_instance());
         }
 
         return mm;

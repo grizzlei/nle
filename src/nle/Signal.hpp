@@ -13,7 +13,7 @@ namespace nle
     class Signal
     {
     public:
-        typedef std::function<void(const T & message, ExtraArgs... extraArgs)> callback_t;
+        typedef std::function<void(const T & message, ExtraArgs... args)> callback_t;
 
         Signal()
         {
@@ -34,7 +34,7 @@ namespace nle
             }
         }
 
-        void bindCallback(callback_t callback)
+        void bind_callback(callback_t callback)
         {
             m_callbacks.push_back(callback);
         }

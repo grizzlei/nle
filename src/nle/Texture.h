@@ -10,16 +10,16 @@ namespace nle
     class Texture
     {
     private:
-        GLuint m_textureId;
+        GLuint m_texture_id;
         GLint m_width;
         GLint m_height;
         GLint m_bitDepth;
-        std::string m_filePath;
+        std::string m_file_path;
 
     public:
-        Texture(const std::string &filePath);
+        Texture(const std::string &file_path);
         ~Texture();
-        void loadFromFile(const std::string &filePath);
+        void load_from_file(const std::string &file_path);
         void use();
         void unuse();
         void clear();

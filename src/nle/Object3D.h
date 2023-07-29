@@ -25,24 +25,24 @@ namespace nle
         Object3D *m_parent;
         Object3D *m_root;
 
-        void setRoot(Object3D *root);
+        void set_root(Object3D *root);
 
     public:
         Object3D(const std::string &id = "");
         virtual ~Object3D();
-        void setPosition(glm::vec3 position);
+        void set_position(glm::vec3 position);
         glm::vec3 position() const;
-        void setRotation(glm::vec3 rotation);
+        void set_rotation(glm::vec3 rotation);
         glm::vec3 rotation() const;
-        void setScale(glm::vec3 scale);
+        void set_scale(glm::vec3 scale);
         glm::vec3 velocity() const;
-        void setVelocity(glm::vec3 velocity);
+        void set_velocity(glm::vec3 velocity);
         glm::vec3 scale() const;
         std::vector<Object3D *> children() const;
-        void addChild(Object3D *child);
-        void setId(const std::string);
+        void add_child(Object3D *child);
+        void set_id(const std::string);
         std::string id() const;
-        void setParent(Object3D *parent);
+        void set_parent(Object3D *parent);
         Object3D *parent() const;
         Object3D *root() const;
     };

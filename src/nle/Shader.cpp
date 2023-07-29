@@ -10,9 +10,9 @@ namespace nle
     {
     }
 
-    Shader::Shader(const std::string &vertexSource, const std::string &fragmentSource, bool fromFile)
+    Shader::Shader(const std::string &vertex_source, const std::string &fragment_source, bool fromFile)
     {
-        load(vertexSource, fragmentSource, fromFile);
+        load(vertex_source, fragment_source, fromFile);
     }
 
     Shader::~Shader()
@@ -20,7 +20,7 @@ namespace nle
         clear();
     }
 
-    std::string Shader::loadFromFile(const std::string &path)
+    std::string Shader::load_from_file(const std::string &path)
     {
         std::ifstream ifs(path);
         std::stringstream iss;
@@ -28,7 +28,7 @@ namespace nle
         return iss.str();
     }
 
-    void Shader::attachShaders(GLuint program, const std::string &code, GLenum type)
+    void Shader::attach_shaders(GLuint program, const std::string &code, GLenum type)
     {
         std::string shaderTypeStr;
         switch (type)
@@ -65,11 +65,11 @@ namespace nle
         glAttachShader(program, shader);
     }
 
-    void Shader::compileShaders(const std::string &vertex, const std::string &fragment)
+    void Shader::compile_shaders(const std::string &vertex, const std::string &fragment)
     {
-        m_shaderProgram = glCreateProgram();
+        m_program = glCreateProgram();
 
-        if (!m_shaderProgram)
+        if (!m_program)
         {
             std::cerr << "error creating program" << std::endl;
             return;
@@ -78,25 +78,25 @@ namespace nle
         GLint result = 0;
         GLchar errLog[1024] = {0};
 
-        attachShaders(m_shaderProgram, vertex, GL_VERTEX_SHADER);
-        attachShaders(m_shaderProgram, fragment, GL_FRAGMENT_SHADER);
+        attach_shaders(m_program, vertex, GL_VERTEX_SHADER);
+        attach_shaders(m_program, fragment, GL_FRAGMENT_SHADER);
 
-        glLinkProgram(m_shaderProgram);
-        glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &result);
+        glLinkProgram(m_program);
+        glGetProgramiv(m_program, GL_LINK_STATUS, &result);
 
         if (!result)
         {
-            glGetProgramInfoLog(m_shaderProgram, sizeof(errLog), NULL, errLog);
+            glGetProgramInfoLog(m_program, sizeof(errLog), NULL, errLog);
             std::cerr << "error linking program: '" << errLog << "'" << std::endl;
             return;
         }
 
-        glValidateProgram(m_shaderProgram);
-        glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, &result);
+        glValidateProgram(m_program);
+        glGetProgramiv(m_program, GL_VALIDATE_STATUS, &result);
 
         if (!result)
         {
-            glGetProgramInfoLog(m_shaderProgram, sizeof(errLog), NULL, errLog);
+            glGetProgramInfoLog(m_program, sizeof(errLog), NULL, errLog);
             std::cerr << "error validating program: '" << errLog << "'" << std::endl;
             return;
         }
@@ -106,42 +106,42 @@ namespace nle
 
     void Shader::use()
     {
-        glUseProgram(m_shaderProgram);
+        glUseProgram(m_program);
     }
     
-    void Shader::load(const std::string &vertexSource, const std::string &fragmentSource, bool fromFile)
+    void Shader::load(const std::string &vertex_source, const std::string &fragment_source, bool fromFile)
     {   
         if (fromFile)
         {
-            compileShaders(loadFromFile(vertexSource), loadFromFile(fragmentSource));
+            compile_shaders(load_from_file(vertex_source), load_from_file(fragment_source));
         }
         else
         {
-            compileShaders(vertexSource, fragmentSource);
+            compile_shaders(vertex_source, fragment_source);
         }
 
-        prdbg("finished compiling %d", m_shaderProgram);
+        prdbg("finished compiling %d", m_program);
     }
 
     void Shader::clear()
     {
-        if(m_vertexShader != 0)
+        if(m_vertex_shader != 0)
         {
-            glDeleteShader(m_vertexShader);
+            glDeleteShader(m_vertex_shader);
         }
-        if(m_fragmentShader != 0)
+        if(m_fragment_shader != 0)
         {
-            glDeleteShader(m_fragmentShader);
+            glDeleteShader(m_fragment_shader);
         }
     }
 
     unsigned int Shader::program() const
     {
-        return m_shaderProgram;
+        return m_program;
     }
 
-    unsigned int Shader::uniformLocation(const std::string &uniform) const
+    unsigned int Shader::uniform_location(const std::string &uniform) const
     {
-        return glGetUniformLocation(m_shaderProgram, uniform.c_str());
+        return glGetUniformLocation(m_program, uniform.c_str());
     }
 } // namespace nle

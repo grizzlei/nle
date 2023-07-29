@@ -25,19 +25,19 @@ namespace nle
         return m_renderer;
     }
 
-    TextureFactory *Nle::textureFactory()
+    TextureFactory *Nle::texture_factory()
     {
-        return m_textureFactory;
+        return m_texture_factory;
     }
 
-    Scene *Nle::currentScene()
+    Scene *Nle::current_scene()
     {
-        return m_renderer->rootScene();
+        return m_renderer->root_scene();
     }
 
-    PhysicsEngine *Nle::physicsEngine()
+    PhysicsEngine *Nle::physics_engine()
     {
-        return m_physicsEngine;
+        return m_physics_engine;
     }
 
     void Nle::run()
@@ -49,14 +49,14 @@ namespace nle
     {
         m_window = new nle::Window(1280, 720, "nice little engine");
         m_renderer = new Renderer3D(m_window);
-        m_textureFactory = new TextureFactory();
-        m_physicsEngine = new PhysicsEngine();
+        m_texture_factory = new TextureFactory();
+        m_physics_engine = new PhysicsEngine();
 
-        m_renderer->setRootScene(new Scene());
+        m_renderer->set_root_scene(new Scene());
 
         RenderLayerAttributes rla;
-        rla.renderDistance = 10000;
-        m_renderer->setRenderLayerAttributes(nle::Renderer3D::RenderLayer::_0, rla);
+        rla.render_distance = 10000;
+        m_renderer->set_render_layer_attributes(nle::Renderer3D::RenderLayer::_0, rla);
 
         // initialize defaults
         DEFAULT_SHADER = new Shader("shader/default_vert.glsl", "shader/default_frag.glsl", true);
@@ -65,8 +65,8 @@ namespace nle
     void Nle::cleanup()
     {
         delete DEFAULT_SHADER;
-        delete m_physicsEngine;
-        delete m_textureFactory;
+        delete m_physics_engine;
+        delete m_texture_factory;
         delete m_renderer;
         delete m_window;
     }

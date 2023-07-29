@@ -9,24 +9,24 @@ namespace nle
     {
     private:
         float m_speed;
-        float m_turnSpeed;
+        float m_turn_speed;
 
         glm::vec3 m_front;
         glm::vec3 m_up;
         glm::vec3 m_right;
-        glm::vec3 m_upWorld;
+        glm::vec3 m_up_world;
 
         void update();
-        glm::mat4 getViewMatrix();
+        glm::mat4 get_view_matrix();
 
     public:
         Camera();
         Camera(glm::vec3 position);
         virtual ~Camera();
-        void setSpeed(float speed);
+        void set_speed(float speed);
         float speed() const;
-        void setTurnSpeed(float turnSpeed);
-        float turnSpeed() const;
+        void set_turn_speed(float turnSpeed);
+        float turn_speed() const;
 
         friend class Renderer3D;
     };

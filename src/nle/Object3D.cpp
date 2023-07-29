@@ -17,12 +17,12 @@ namespace nle
         }
     }
 
-    void Object3D::setPosition(glm::vec3 pos)
+    void Object3D::set_position(glm::vec3 pos)
     {
         m_position = pos;
         for(auto * c : m_children)
         {
-            c->setPosition(pos);
+            c->set_position(pos);
         }
     }
 
@@ -31,12 +31,12 @@ namespace nle
         return m_position;
     }
 
-    void Object3D::setRotation(glm::vec3 rotation)
+    void Object3D::set_rotation(glm::vec3 rotation)
     {
         m_rotation = rotation;
         for(auto * c : m_children)
         {
-            c->setRotation(rotation);
+            c->set_rotation(rotation);
         }
     }
 
@@ -45,12 +45,12 @@ namespace nle
         return m_rotation;
     }
 
-    void Object3D::setScale(glm::vec3 scale)
+    void Object3D::set_scale(glm::vec3 scale)
     {
         m_scale = scale;
         for(auto * c : m_children)
         {
-            c->setScale(scale);
+            c->set_scale(scale);
         }
     }
 
@@ -59,7 +59,7 @@ namespace nle
         return m_velocity;
     }
 
-    void Object3D::setVelocity(glm::vec3 velocity)
+    void Object3D::set_velocity(glm::vec3 velocity)
     {
         m_velocity = velocity;
     }
@@ -74,7 +74,7 @@ namespace nle
         return m_children;
     }
 
-    void Object3D::addChild(Object3D *child)
+    void Object3D::add_child(Object3D *child)
     {
         if(!child)
             prerr("child cannot be null");
@@ -82,13 +82,13 @@ namespace nle
         if (std::find(m_children.begin(), m_children.end(), child) == m_children.end())
         {
             m_children.push_back(child);
-            child->setParent(this);
+            child->set_parent(this);
         }
         else
             prerr("child already added");
     }
 
-    void Object3D::setId(const std::string id)
+    void Object3D::set_id(const std::string id)
     {
         m_id = id;
     }
@@ -98,10 +98,10 @@ namespace nle
         return m_id;
     }
 
-    void Object3D::setParent(Object3D *parent)
+    void Object3D::set_parent(Object3D *parent)
     {
         m_parent = parent;
-        setRoot(parent->root());
+        set_root(parent->root());
     }
 
     Object3D *Object3D::parent() const
@@ -109,12 +109,12 @@ namespace nle
         return m_parent;
     }
 
-    void Object3D::setRoot(Object3D *root)
+    void Object3D::set_root(Object3D *root)
     {
         m_root = root;
         for(auto * c : m_children)
         {
-            c->setRoot(root);
+            c->set_root(root);
         }
     }
 

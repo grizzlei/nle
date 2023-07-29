@@ -24,7 +24,7 @@ namespace nle
         }
 
         Texture *t = new Texture(path);
-        t->loadFromFile(path);
+        t->load_from_file(path);
         if (t->id() > 0)
         {
             m_textures[id] = t;
@@ -38,6 +38,15 @@ namespace nle
     Texture *TextureFactory::get(const std::string &id)
     {
         return m_textures[id];
+    }
+
+    Texture *TextureFactory::load_and_get(const std::string &path, const std::string &id)
+    {
+        if(load(path, id))
+        {
+            return get(id);
+        }
+        return nullptr;
     }
 
 } // namespace nle

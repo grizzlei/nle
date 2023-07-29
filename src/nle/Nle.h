@@ -15,8 +15,8 @@ namespace nle
     private:
         Window *m_window;
         Renderer3D *m_renderer;
-        TextureFactory *m_textureFactory;
-        PhysicsEngine *m_physicsEngine;
+        TextureFactory *m_texture_factory;
+        PhysicsEngine *m_physics_engine;
 
         void initialize();
         void cleanup();
@@ -25,9 +25,9 @@ namespace nle
         ~Nle();
         Window *window();
         Renderer3D *renderer();
-        TextureFactory *textureFactory();
-        Scene *currentScene();
-        PhysicsEngine *physicsEngine();
+        TextureFactory *texture_factory();
+        Scene *current_scene();
+        PhysicsEngine *physics_engine();
         void run();
     };
 

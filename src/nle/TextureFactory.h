@@ -16,6 +16,7 @@ namespace nle
         ~TextureFactory();
         bool load(const std::string& path, const std::string& id);
         Texture *get(const std::string& textureId);
+        Texture *load_and_get(const std::string& path, const std::string& id);
     };
     
 } // namespace nle

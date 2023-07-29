@@ -17,7 +17,7 @@ namespace nle
     public:
         Terrain(unsigned int width = 1, unsigned int height = 1);
         ~Terrain();
-        Mesh * createTerrainMesh();
+        Mesh * create();
     };
 } // namespace nle
 

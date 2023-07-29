@@ -9,33 +9,33 @@
 
 namespace nle
 {
-    Renderer3D::Renderer3D(Window *renderTarget)
-        : m_parentWindow(renderTarget), m_maxRenderDistance(10000.f), m_timeStrictMode(false)
+    Renderer3D::Renderer3D(Window *render_target)
+        : m_parent_window(render_target), m_max_render_distance(10000.f), m_time_strict_mode(false)
     {
-        for (auto &it : m_renderLayerAttributes)
+        for (auto &it : m_render_layer_attributes)
         {
-            it.second.renderDistance = m_maxRenderDistance;
+            it.second.render_distance = m_max_render_distance;
         }
 
         initialize();
-        m_parentWindow->setDrawCallback(
+        m_parent_window->set_draw_callback(
             [this]()
             {
-                glViewport(0, 0, this->m_parentWindow->m_width, this->m_parentWindow->m_height);
+                glViewport(0, 0, this->m_parent_window->m_width, this->m_parent_window->m_height);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                this->renderRecursively(this->m_rootScene);
-                m_renderTimestamp = get_time_sec();
+                this->render_recursively(this->m_root_scene);
+                m_render_timestamp = get_time_sec();
             });
 
-        m_inputTimestamp = get_time_sec();
-        m_thrInput = std::thread(
+        m_input_timestamp = get_time_sec();
+        m_thr_input = std::thread(
             [this]()
             {
-                while (!this->m_parentWindow->m_closed)
+                while (!this->m_parent_window->m_closed)
                 {
-                    this->processKeyboardInput();
-                    this->processMouseInput(this->m_parentWindow->m_mouseDelta.x, this->m_parentWindow->m_mouseDelta.y);
-                    this->m_parentWindow->m_mouseDelta = glm::vec2(0.f);
+                    this->process_keyboard_input();
+                    this->process_mouse_input(this->m_parent_window->m_mouse_delta.x, this->m_parent_window->m_mouse_delta.y);
+                    this->m_parent_window->m_mouse_delta = glm::vec2(0.f);
 
                     // 60 fps constant input processing.
                     std::this_thread::sleep_for(std::chrono::microseconds(NLE_INPUT_PROCESS_SLEEP_TIME));
@@ -45,11 +45,11 @@ namespace nle
 
     Renderer3D::~Renderer3D()
     {
-        if (m_thrInput.joinable())
-            m_thrInput.join();
+        if (m_thr_input.joinable())
+            m_thr_input.join();
     }
 
-    void Renderer3D::renderRecursively(Object3D *root)
+    void Renderer3D::render_recursively(Object3D *root)
     {
         if (!root)
         {
@@ -57,13 +57,13 @@ namespace nle
             return;
         }
 
-        if(m_timeStrictMode)
+        if(m_time_strict_mode)
         {
             double now = get_time_sec();
 
-            if((now - m_renderTimestamp) > NLE_RENDER_MAX_ELAPSED_TIME_SECONDS)
+            if((now - m_render_timestamp) > NLE_RENDER_MAX_ELAPSED_TIME_SECONDS)
             {
-                m_renderTimestamp = now;
+                m_render_timestamp = now;
                 return;
             }
         }
@@ -78,7 +78,7 @@ namespace nle
 
         for (auto *c : root->children())
         {
-            renderRecursively(c);
+            render_recursively(c);
         }
     }
 
@@ -93,58 +93,58 @@ namespace nle
         glClearColor(1.f, 1.f, 1.f, 1.f);
     }
 
-    void Renderer3D::processKeyboardInput()
+    void Renderer3D::process_keyboard_input()
     {
         constexpr double limit = 1.f / 60.f;
         double now = get_time_sec();
 
-        if ((now - m_inputTimestamp) < limit)
+        if ((now - m_input_timestamp) < limit)
         {
             return;
         }
 
-        Camera *c = m_rootScene->camera();
+        Camera *c = m_root_scene->camera();
         glm::vec3 dposf = c->m_front * c->m_speed;
         glm::vec3 dposr = c->m_right * c->m_speed;
         glm::vec3 dposu = c->m_up * c->m_speed;
 
-        if (m_parentWindow->m_keys[GLFW_KEY_W])
+        if (m_parent_window->m_keys[GLFW_KEY_W])
         {
-            c->setPosition((c->position() += dposf));
+            c->set_position((c->position() += dposf));
         }
-        if (m_parentWindow->m_keys[GLFW_KEY_S])
+        if (m_parent_window->m_keys[GLFW_KEY_S])
         {
-            c->setPosition((c->position() -= dposf));
+            c->set_position((c->position() -= dposf));
         }
-        if (m_parentWindow->m_keys[GLFW_KEY_D])
+        if (m_parent_window->m_keys[GLFW_KEY_D])
         {
-            c->setPosition((c->position() += dposr));
+            c->set_position((c->position() += dposr));
         }
-        if (m_parentWindow->m_keys[GLFW_KEY_A])
+        if (m_parent_window->m_keys[GLFW_KEY_A])
         {
-            c->setPosition((c->position() -= dposr));
+            c->set_position((c->position() -= dposr));
         }
-        if (m_parentWindow->m_keys[GLFW_KEY_E])
+        if (m_parent_window->m_keys[GLFW_KEY_E])
         {
-            c->setPosition((c->position() += dposu));
+            c->set_position((c->position() += dposu));
         }
-        if (m_parentWindow->m_keys[GLFW_KEY_Q])
+        if (m_parent_window->m_keys[GLFW_KEY_Q])
         {
-            c->setPosition((c->position() -= dposu));
+            c->set_position((c->position() -= dposu));
         }
 
-        m_inputTimestamp = get_time_sec();
+        m_input_timestamp = get_time_sec();
     }
 
-    void Renderer3D::processMouseInput(GLfloat dx, GLfloat dy)
+    void Renderer3D::process_mouse_input(GLfloat dx, GLfloat dy)
     {
-        if (m_rootScene)
+        if (m_root_scene)
         {
-            Camera *c = m_rootScene->camera();
+            Camera *c = m_root_scene->camera();
             if (c)
             {
-                dx *= c->turnSpeed();
-                dy *= c->turnSpeed();
+                dx *= c->turn_speed();
+                dy *= c->turn_speed();
 
                 glm::vec3 camrot = c->rotation();
 
@@ -160,7 +160,7 @@ namespace nle
                     pitch = -89.f;
                 }
 
-                c->setRotation({pitch, yaw, 0.f});
+                c->set_rotation({pitch, yaw, 0.f});
                 c->update();
             }
         }
@@ -180,13 +180,13 @@ namespace nle
             return;
         }
 
-        if (!m_renderLayerAttributes[mi->m_renderLayer].visible)
+        if (!m_render_layer_attributes[mi->m_render_layer].visible)
         {
             return;
         }
 
         if (glm::distance(static_cast<Scene *>(d->root())->camera()->position(), d->position()) >
-            m_renderLayerAttributes[mi->m_renderLayer].renderDistance)
+            m_render_layer_attributes[mi->m_render_layer].render_distance)
         {
             return;
         }
@@ -197,42 +197,42 @@ namespace nle
             return;
         }
 
-        glPolygonMode(GL_FRONT_AND_BACK, mi->m_renderMode);
+        glPolygonMode(GL_FRONT_AND_BACK, mi->m_render_mode);
 
         mi->mesh()->shader()->use();
 
-        GLuint uniformModel = mi->mesh()->shader()->uniformLocation("model");
-        GLuint uniformProjection = mi->mesh()->shader()->uniformLocation("projection");
-        GLuint uniformView = mi->mesh()->shader()->uniformLocation("view");
-        GLuint uniformAmbientIntensity = mi->mesh()->shader()->uniformLocation("directionalLight.ambientIntensity");
-        GLuint uniformAmbientColor = mi->mesh()->shader()->uniformLocation("directionalLight.color");
-        GLuint uniformDiffuseDirection = mi->mesh()->shader()->uniformLocation("directionalLight.direction");
-        GLuint uniformDiffuseIntensity = mi->mesh()->shader()->uniformLocation("directionalLight.diffuseIntensity");
-        GLuint uniformLightingEnabled = mi->mesh()->shader()->uniformLocation("lightingEnabled");
-        GLuint uniformTextureEnabled = mi->mesh()->shader()->uniformLocation("textureEnabled");
+        GLuint unf_model = mi->mesh()->shader()->uniform_location("model");
+        GLuint unf_proj = mi->mesh()->shader()->uniform_location("projection");
+        GLuint unf_view = mi->mesh()->shader()->uniform_location("view");
+        GLuint unf_ambient_intensity = mi->mesh()->shader()->uniform_location("directionalLight.ambientIntensity");
+        GLuint unf_ambient_color = mi->mesh()->shader()->uniform_location("directionalLight.color");
+        GLuint unf_diffuse_direction = mi->mesh()->shader()->uniform_location("directionalLight.direction");
+        GLuint unf_diffuse_intensity = mi->mesh()->shader()->uniform_location("directionalLight.diffuseIntensity");
+        GLuint unf_light_enabled = mi->mesh()->shader()->uniform_location("lightingEnabled");
+        GLuint unf_texture_enabled = mi->mesh()->shader()->uniform_location("textureEnabled");
 
         if (mi->mesh()->texture())
         {
             mi->mesh()->texture()->use();
-            glUniform1i(uniformTextureEnabled, 1);
+            glUniform1i(unf_texture_enabled, 1);
         }
         else
         {
-            glUniform1i(uniformTextureEnabled, 0);
+            glUniform1i(unf_texture_enabled, 0);
         }
 
         if (s->light()->enabled())
         {
-            glUniform1i(uniformLightingEnabled, 1);
-            s->light()->use(uniformAmbientIntensity, uniformAmbientColor, uniformDiffuseIntensity, uniformDiffuseDirection);
+            glUniform1i(unf_light_enabled, 1);
+            s->light()->use(unf_ambient_intensity, unf_ambient_color, unf_diffuse_intensity, unf_diffuse_direction);
         }
         else
         {
-            glUniform1i(uniformLightingEnabled, 0);
+            glUniform1i(unf_light_enabled, 0);
         }
 
         glm::mat4 model = glm::mat4(1.f);
-        glm::mat4 projection = glm::perspective(45.f, (GLfloat)m_parentWindow->m_width / (GLfloat)m_parentWindow->m_height, 0.1f, m_maxRenderDistance);
+        glm::mat4 projection = glm::perspective(45.f, (GLfloat)m_parent_window->m_width / (GLfloat)m_parent_window->m_height, 0.1f, m_max_render_distance);
 
         model = glm::translate(model, d->position());
         model = glm::rotate(model, glm::radians(d->rotation().x), glm::vec3(1.f, 0.f, 0.f));
@@ -240,13 +240,13 @@ namespace nle
         model = glm::rotate(model, glm::radians(d->rotation().z), glm::vec3(0.f, 0.f, 1.f));
         model = glm::scale(model, d->scale());
 
-        glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-        glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-        glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(s->camera()->getViewMatrix()));
+        glUniformMatrix4fv(unf_model, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(unf_proj, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(unf_view, 1, GL_FALSE, glm::value_ptr(s->camera()->get_view_matrix()));
 
         glBindVertexArray(mi->mesh()->m_vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mi->mesh()->m_ebo);
-        glDrawElements(mi->mesh()->m_primitiveType, mi->mesh()->indices()->size(), GL_UNSIGNED_INT, 0);
+        glDrawElements(mi->mesh()->m_primitive_type, mi->mesh()->indices()->size(), GL_UNSIGNED_INT, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
@@ -256,24 +256,24 @@ namespace nle
             mi->mesh()->texture()->unuse();
     }
 
-    void Renderer3D::setRootScene(Scene *root)
+    void Renderer3D::set_root_scene(Scene *root)
     {
-        m_rootScene = root;
+        m_root_scene = root;
     }
 
-    Scene *Renderer3D::rootScene() const
+    Scene *Renderer3D::root_scene() const
     {
-        return m_rootScene;
+        return m_root_scene;
     }
 
-    void Renderer3D::setRenderLayerAttributes(RenderLayer layer, RenderLayerAttributes attributes)
+    void Renderer3D::set_render_layer_attributes(RenderLayer layer, RenderLayerAttributes attributes)
     {
-        m_renderLayerAttributes[layer] = attributes;
+        m_render_layer_attributes[layer] = attributes;
     }
 
-    RenderLayerAttributes Renderer3D::renderLayerAttributes(RenderLayer layer)
+    RenderLayerAttributes Renderer3D::render_layer_attributes(RenderLayer layer)
     {
-        return m_renderLayerAttributes[layer];
+        return m_render_layer_attributes[layer];
     }
 
 } // namespace nle

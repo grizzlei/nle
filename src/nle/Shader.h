@@ -13,27 +13,27 @@ namespace nle
     private:
         GLuint m_vbo;
         GLuint m_vao;
-        GLuint m_vertexShader;
-        GLuint m_fragmentShader;
-        std::string m_sourceVertex;
-        std::string m_sourceFragment;
+        GLuint m_vertex_shader;
+        GLuint m_fragment_shader;
+        std::string m_vertex_source;
+        std::string m_fragment_source;
 
-        std::string loadFromFile(const std::string &path);
-        void compileShaders(const std::string &vertex, const std::string &fragment);
-        void attachShaders(GLuint program, const std::string &code, GLenum type);
+        std::string load_from_file(const std::string &path);
+        void compile_shaders(const std::string &vertex, const std::string &fragment);
+        void attach_shaders(GLuint program, const std::string &code, GLenum type);
 
     protected:
-        GLuint m_shaderProgram;
+        GLuint m_program;
 
     public:
         Shader();
-        Shader(const std::string &vertexSource, const std::string &fragmentSource, bool fromFile = false);
+        Shader(const std::string &vertex_source, const std::string &fragment_source, bool fromFile = false);
         ~Shader();
         void use();
-        void load(const std::string &vertexSource, const std::string &fragmentSource, bool fromFile = false);
+        void load(const std::string &vertex_source, const std::string &fragment_source, bool fromFile = false);
         void clear();
         unsigned int program() const;
-        unsigned int uniformLocation(const std::string& uniform) const;      
+        unsigned int uniform_location(const std::string& uniform) const;      
 
         friend class Renderer3D;
     };
