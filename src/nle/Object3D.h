@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Utils.h"
+#include "Signal.hpp"
 
 #include <vector>
 #include <string>
@@ -24,6 +25,8 @@ namespace nle
 
         Object3D *m_parent;
         Object3D *m_root;
+
+        Signal<Object3D*> m_sig_child_added;
 
         void set_root(Object3D *root);
 
@@ -45,6 +48,7 @@ namespace nle
         void set_parent(Object3D *parent);
         Object3D *parent() const;
         Object3D *root() const;
+        Signal<Object3D*> sig_child_added() const;
     };
 } // namespace nle
 

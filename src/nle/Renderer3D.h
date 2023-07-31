@@ -30,6 +30,7 @@ namespace nle
         std::thread m_thr_input;
 
         void render_recursively(Object3D *root);
+        void render_scene(Scene *scene);
         void initialize();
         void process_keyboard_input();
         void process_mouse_input(GLfloat dx, GLfloat dy);
@@ -49,7 +50,7 @@ namespace nle
 
         Renderer3D(Window *render_target);
         virtual ~Renderer3D();
-        void render(Object3D *d);
+        void render(MeshInstance *mi);
         void set_root_scene(Scene *root);
         Scene *root_scene() const;
         void set_render_layer_attributes(RenderLayer layer, RenderLayerAttributes attributes);

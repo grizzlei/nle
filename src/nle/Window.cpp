@@ -25,6 +25,11 @@ namespace nle
             throw std::runtime_error("fatal_error: could not initialize glew. error code: " + std::to_string(err));
         }
 
+        const GLubyte* vendor = glGetString(GL_VENDOR);
+        const GLubyte* renderer = glGetString(GL_RENDERER);
+        prinf("%s", (char*)vendor);
+        prinf("%s", (char*)renderer);
+
         glfwSetWindowUserPointer(m_handle, this);
         glfwSetKeyCallback(m_handle, Window::key_handler);
         glfwSetCursorPosCallback(m_handle, Window::mouse_handler);

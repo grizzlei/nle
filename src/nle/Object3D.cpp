@@ -74,6 +74,11 @@ namespace nle
         return m_children;
     }
 
+    Signal<Object3D *> Object3D::sig_child_added() const
+    {
+        return m_sig_child_added;
+    }
+
     void Object3D::add_child(Object3D *child)
     {
         if(!child)
@@ -83,6 +88,7 @@ namespace nle
         {
             m_children.push_back(child);
             child->set_parent(this);
+            m_sig_child_added.emit(child);
         }
         else
             prerr("child already added");

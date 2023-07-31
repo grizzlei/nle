@@ -4,7 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define NLE_INPUT_PROCESS_SLEEP_TIME            16666
+#define NLE_INPUT_PROCESS_SLEEP_TIME            1
 #define NLE_RENDER_MAX_ELAPSED_TIME_SECONDS     0.016666
 
 namespace nle
@@ -23,7 +23,8 @@ namespace nle
             {
                 glViewport(0, 0, this->m_parent_window->m_width, this->m_parent_window->m_height);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                this->render_recursively(this->m_root_scene);
+                // this->render_recursively(this->m_root_scene);
+                this->render_scene(this->m_root_scene);
                 m_render_timestamp = get_time_sec();
             });
 
@@ -37,8 +38,7 @@ namespace nle
                     this->process_mouse_input(this->m_parent_window->m_mouse_delta.x, this->m_parent_window->m_mouse_delta.y);
                     this->m_parent_window->m_mouse_delta = glm::vec2(0.f);
 
-                    // 60 fps constant input processing.
-                    std::this_thread::sleep_for(std::chrono::microseconds(NLE_INPUT_PROCESS_SLEEP_TIME));
+                    std::this_thread::sleep_for(std::chrono::nanoseconds(NLE_INPUT_PROCESS_SLEEP_TIME));
                 }
             });
     }
@@ -79,6 +79,21 @@ namespace nle
         for (auto *c : root->children())
         {
             render_recursively(c);
+        }
+    }
+
+    void Renderer3D::render_scene(Scene *scene)
+    {
+        for(auto *i : scene->m_render_objects)
+        {
+            MeshInstance *m;
+            if(m = dynamic_cast<MeshInstance*>(i))
+            {
+                if (m->visible())
+                {
+                    render(m);
+                }
+            }
         }
     }
 
@@ -166,14 +181,14 @@ namespace nle
         }
     }
 
-    void Renderer3D::render(Object3D *d)
+    void Renderer3D::render(MeshInstance *mi)
     {
-        if (!d)
-        {
-            return;
-        }
+        // if (!d)
+        // {
+        //     return;
+        // }
 
-        MeshInstance *mi = dynamic_cast<MeshInstance *>(d);
+        // MeshInstance *mi = dynamic_cast<MeshInstance *>(d);
 
         if (!mi)
         {
@@ -185,17 +200,17 @@ namespace nle
             return;
         }
 
-        if (glm::distance(static_cast<Scene *>(d->root())->camera()->position(), d->position()) >
+        if (glm::distance(static_cast<Scene *>(mi->root())->camera()->position(), mi->position()) >
             m_render_layer_attributes[mi->m_render_layer].render_distance)
         {
             return;
         }
 
-        Scene *s = static_cast<Scene *>(d->root());
-        if (!s)
-        {
-            return;
-        }
+        Scene *s = static_cast<Scene *>(mi->root());
+        // if (!s)
+        // {
+        //     return;
+        // }
 
         glPolygonMode(GL_FRONT_AND_BACK, mi->m_render_mode);
 
@@ -234,11 +249,11 @@ namespace nle
         glm::mat4 model = glm::mat4(1.f);
         glm::mat4 projection = glm::perspective(45.f, (GLfloat)m_parent_window->m_width / (GLfloat)m_parent_window->m_height, 0.1f, m_max_render_distance);
 
-        model = glm::translate(model, d->position());
-        model = glm::rotate(model, glm::radians(d->rotation().x), glm::vec3(1.f, 0.f, 0.f));
-        model = glm::rotate(model, glm::radians(d->rotation().y), glm::vec3(0.f, 1.f, 0.f));
-        model = glm::rotate(model, glm::radians(d->rotation().z), glm::vec3(0.f, 0.f, 1.f));
-        model = glm::scale(model, d->scale());
+        model = glm::translate(model, mi->position());
+        model = glm::rotate(model, glm::radians(mi->rotation().x), glm::vec3(1.f, 0.f, 0.f));
+        model = glm::rotate(model, glm::radians(mi->rotation().y), glm::vec3(0.f, 1.f, 0.f));
+        model = glm::rotate(model, glm::radians(mi->rotation().z), glm::vec3(0.f, 0.f, 1.f));
+        model = glm::scale(model, mi->scale());
 
         glUniformMatrix4fv(unf_model, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(unf_proj, 1, GL_FALSE, glm::value_ptr(projection));

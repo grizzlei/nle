@@ -34,7 +34,7 @@ namespace nle
             }
         }
 
-        void bind_callback(callback_t callback)
+        void bindCallback(callback_t callback)
         {
             m_callbacks.push_back(callback);
         }
