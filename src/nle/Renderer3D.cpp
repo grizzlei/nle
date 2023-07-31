@@ -105,7 +105,8 @@ namespace nle
         // glEnable(GL_BLEND);
         // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthFunc(GL_LEQUAL);
-        glClearColor(1.f, 1.f, 1.f, 1.f);
+        // glClearColor(1.f, 1.f, 1.f, 1.f);
+        glClearColor(0.53f, 0.8f, 0.92f, 1.f);
     }
 
     void Renderer3D::process_keyboard_input()
