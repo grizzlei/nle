@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Window.h"
 #include "Mesh.h"
+#include "MultiMesh.h"
 
 #include <thread>
 #include <unordered_map>
@@ -51,6 +52,7 @@ namespace nle
         Renderer3D(Window *render_target);
         virtual ~Renderer3D();
         void render(MeshInstance *mi);
+        void render(MultiMeshInstance *mmi);
         void set_root_scene(Scene *root);
         Scene *root_scene() const;
         void set_render_layer_attributes(RenderLayer layer, RenderLayerAttributes attributes);

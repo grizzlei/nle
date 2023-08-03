@@ -86,13 +86,15 @@ namespace nle
     {
         for(auto *i : scene->m_render_objects)
         {
-            MeshInstance *m;
-            if(m = dynamic_cast<MeshInstance*>(i))
+            MeshInstance *mi;
+            MultiMeshInstance *mmi;
+            if(mi = dynamic_cast<MeshInstance*>(i))
             {
-                if (m->visible())
-                {
-                    render(m);
-                }
+                render(mi);
+            }
+            else if(mmi = dynamic_cast<MultiMeshInstance*>(i))
+            {
+                render(mmi);
             }
         }
     }
@@ -270,6 +272,95 @@ namespace nle
 
         if (mi->mesh()->texture())
             mi->mesh()->texture()->unuse();
+    }
+
+    void Renderer3D::render(MultiMeshInstance *mmi)
+    {
+        if (!mmi)
+        {
+            return;
+        }
+
+        if (!m_render_layer_attributes[mmi->render_layer()].visible)
+        {
+            return;
+        }
+
+        if (glm::distance(static_cast<Scene *>(mmi->root())->camera()->position(), mmi->position()) >
+            m_render_layer_attributes[mmi->render_layer()].render_distance)
+        {
+            return;
+        }
+
+        Scene *s = static_cast<Scene *>(mmi->root());
+        if (!s)
+        {
+            return;
+        }
+
+        glPolygonMode(GL_FRONT_AND_BACK, mmi->render_mode());
+
+        mmi->multimesh()->mesh()->shader()->use();
+
+        GLuint unf_model =mmi->multimesh()->mesh()->shader()->uniform_location("model");
+        GLuint unf_proj = mmi->multimesh()->mesh()->shader()->uniform_location("projection");
+        GLuint unf_view = mmi->multimesh()->mesh()->shader()->uniform_location("view");
+        GLuint unf_ambient_intensity = mmi->multimesh()->mesh()->shader()->uniform_location("directionalLight.ambientIntensity");
+        GLuint unf_ambient_color = mmi->multimesh()->mesh()->shader()->uniform_location("directionalLight.color");
+        GLuint unf_diffuse_direction = mmi->multimesh()->mesh()->shader()->uniform_location("directionalLight.direction");
+        GLuint unf_diffuse_intensity = mmi->multimesh()->mesh()->shader()->uniform_location("directionalLight.diffuseIntensity");
+        GLuint unf_light_enabled = mmi->multimesh()->mesh()->shader()->uniform_location("lightingEnabled");
+        GLuint unf_texture_enabled = mmi->multimesh()->mesh()->shader()->uniform_location("textureEnabled");
+
+        if (mmi->multimesh()->mesh()->texture())
+        {
+            mmi->multimesh()->mesh()->texture()->use();
+            glUniform1i(unf_texture_enabled, 1);
+        }
+        else
+        {
+            glUniform1i(unf_texture_enabled, 0);
+        }
+
+        if (s->light()->enabled())
+        {
+            glUniform1i(unf_light_enabled, 1);
+            s->light()->use(unf_ambient_intensity, unf_ambient_color, unf_diffuse_intensity, unf_diffuse_direction);
+        }
+        else
+        {
+            glUniform1i(unf_light_enabled, 0);
+        }
+
+        glm::mat4 model = glm::mat4(1.f);
+        glm::mat4 projection = glm::perspective(45.f, (GLfloat)m_parent_window->m_width / (GLfloat)m_parent_window->m_height, 0.1f, m_max_render_distance);
+
+        model = glm::translate(model, mmi->position());
+        model = glm::rotate(model, glm::radians(mmi->rotation().x), glm::vec3(1.f, 0.f, 0.f));
+        model = glm::rotate(model, glm::radians(mmi->rotation().y), glm::vec3(0.f, 1.f, 0.f));
+        model = glm::rotate(model, glm::radians(mmi->rotation().z), glm::vec3(0.f, 0.f, 1.f));
+        model = glm::scale(model, mmi->scale());
+
+        glUniformMatrix4fv(unf_model, 1, GL_FALSE, glm::value_ptr(model));
+        glUniformMatrix4fv(unf_proj, 1, GL_FALSE, glm::value_ptr(projection));
+        glUniformMatrix4fv(unf_view, 1, GL_FALSE, glm::value_ptr(s->camera()->get_view_matrix()));
+
+        glUniform3fv(glGetUniformLocation(
+            mmi->multimesh()->mesh()->shader()->program(),
+            "inst_positions"), mmi->multimesh()->positions().size(),
+            glm::value_ptr(mmi->multimesh()->positions().data()[0])
+        );
+
+        // glBindVertexArray(mmi->multimesh()->mesh()->m_vao);
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mmi->multimesh()->mesh()->m_ebo);
+        // glDrawElements(mmi->multimesh()->mesh()->m_primitive_type, mmi->multimesh()->mesh()->indices()->size(), GL_UNSIGNED_INT, 0);
+        // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+        // glBindVertexArray(0);
+
+        glUseProgram(0);
+
+        if (mmi->multimesh()->mesh()->texture())
+            mmi->multimesh()->mesh()->texture()->unuse();
     }
 
     void Renderer3D::set_root_scene(Scene *root)

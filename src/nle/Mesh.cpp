@@ -70,7 +70,7 @@ namespace nle
             //     true);
 
             // m_aabb_Mesh->m_primitive_type = GL_LINE_STRIP;
-            prdbg("aabb max %f aabb min %f.", aabb_max.y, aabb_min.y);
+            // prdbg("aabb max %f aabb min %f.", aabb_max.y, aabb_min.y);
         }
 
         load();
@@ -159,74 +159,74 @@ namespace nle
         return m_mesh;
     }
 
-    void MeshInstance::set_render_mode(RenderMode render_mode)
-    {
-        m_render_mode = render_mode;
-        for (auto *c : this->children())
-        {
-            if (MeshInstance *m = dynamic_cast<MeshInstance *>(c))
-            {
-                m->set_render_mode(render_mode);
-            }
-        }
-    }
+    // void MeshInstance::set_render_mode(RenderMode render_mode)
+    // {
+    //     m_render_mode = render_mode;
+    //     for (auto *c : this->children())
+    //     {
+    //         if (MeshInstance *m = dynamic_cast<MeshInstance *>(c))
+    //         {
+    //             m->set_render_mode(render_mode);
+    //         }
+    //     }
+    // }
 
-    void MeshInstance::set_visible(bool visible)
-    {
-        m_visible = visible;
-    }
+    // void MeshInstance::set_visible(bool visible)
+    // {
+    //     m_visible = visible;
+    // }
 
-    bool MeshInstance::visible() const
-    {
-        return m_visible;
-    }
+    // bool MeshInstance::visible() const
+    // {
+    //     return m_visible;
+    // }
 
-    void MeshInstance::set_render_layer(int layer)
-    {
-        m_render_layer = layer;
-    }
+    // void MeshInstance::set_render_layer(int layer)
+    // {
+    //     m_render_layer = layer;
+    // }
 
-    int MeshInstance::render_layer() const
-    {
-        return m_render_layer;
-    }
+    // int MeshInstance::render_layer() const
+    // {
+    //     return m_render_layer;
+    // }
 
-    MultiMesh::MultiMesh(const std::vector<Mesh *> &meshes)
-        : m_meshes(meshes)
-    {
-    }
+    // MultiMesh::MultiMesh(const std::vector<Mesh *> &meshes)
+    //     : m_meshes(meshes)
+    // {
+    // }
 
-    MultiMesh::~MultiMesh()
-    {
-        for(auto * i : m_meshes)
-        {
-            delete i;
-        }
-    }
+    // MultiMesh::~MultiMesh()
+    // {
+    //     for(auto * i : m_meshes)
+    //     {
+    //         delete i;
+    //     }
+    // }
 
-    std::vector<Mesh *> *MultiMesh::meshes()
-    {
-        return &m_meshes;
-    }
+    // std::vector<Mesh *> *MultiMesh::meshes()
+    // {
+    //     return &m_meshes;
+    // }
 
-    MultiMeshInstance *MultiMesh::create_instance()
-    {
-        MultiMeshInstance *mm = new MultiMeshInstance();
+    // MultiMeshInstance *MultiMesh::create_instance()
+    // {
+    //     MultiMeshInstance *mm = new MultiMeshInstance();
 
-        for (auto *i : m_meshes)
-        {
-            mm->add_child(i->create_instance());
-        }
+    //     for (auto *i : m_meshes)
+    //     {
+    //         mm->add_child(i->create_instance());
+    //     }
 
-        return mm;
-    }
+    //     return mm;
+    // }
 
-    MultiMeshInstance::MultiMeshInstance()
-    {
-    }
+    // MultiMeshInstance::MultiMeshInstance()
+    // {
+    // }
 
-    MultiMeshInstance::~MultiMeshInstance()
-    {
-    }
+    // MultiMeshInstance::~MultiMeshInstance()
+    // {
+    // }
 
 } // namespace nle

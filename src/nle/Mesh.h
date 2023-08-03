@@ -4,20 +4,19 @@
 #include <vector>
 
 #include "Shader.h"
-#include "Object3D.h"
+#include "RenderObject3D.h"
 #include "Texture.h"
 
 namespace nle
 {
     class MeshInstance;
-    class MultiMeshInstance;
 
-    enum RenderMode
-    {
-        Fill = GL_FILL,
-        Line = GL_LINE,
-        Point = GL_POINT
-    };
+    // enum RenderMode
+    // {
+    //     Fill = GL_FILL,
+    //     Line = GL_LINE,
+    //     Point = GL_POINT
+    // };
 
     class Mesh
     {
@@ -50,7 +49,7 @@ namespace nle
         friend class Renderer3D;
     };
 
-    class MeshInstance : public Object3D
+    class MeshInstance : public RenderObject3D
     {
     private:
         Mesh *m_mesh;
@@ -63,36 +62,36 @@ namespace nle
         MeshInstance(Mesh *mesh);
         Mesh *mesh();
 
-        void set_render_mode(RenderMode render_mode = RenderMode::Fill);
+        // void set_render_mode(RenderMode render_mode = RenderMode::Fill);
 
-        void set_visible(bool visible);
-        bool visible() const;
+        // void set_visible(bool visible);
+        // bool visible() const;
 
-        void set_render_layer(int layer);
-        int render_layer() const;
+        // void set_render_layer(int layer);
+        // int render_layer() const;
 
         friend class Renderer3D;
     };
 
-    class MultiMesh
-    {
-    private:
-        std::vector<Mesh *> m_meshes;
+    // class MultiMesh
+    // {
+    // private:
+    //     std::vector<Mesh *> m_meshes;
 
-    public:
-        MultiMesh(const std::vector<Mesh *> &meshes = {});
-        ~MultiMesh();
-        std::vector<Mesh *> *meshes();
-        MultiMeshInstance *create_instance();
-    };
+    // public:
+    //     MultiMesh(const std::vector<Mesh *> &meshes = {});
+    //     ~MultiMesh();
+    //     std::vector<Mesh *> *meshes();
+    //     MultiMeshInstance *create_instance();
+    // };
 
-    class MultiMeshInstance : public Object3D
-    {
-    public:
-        MultiMeshInstance();
-        ~MultiMeshInstance();
-        friend class Mesh;
-    };
+    // class MultiMeshInstance : public Object3D
+    // {
+    // public:
+    //     MultiMeshInstance();
+    //     ~MultiMeshInstance();
+    //     friend class Mesh;
+    // };
 
 } // namespace nle
 
