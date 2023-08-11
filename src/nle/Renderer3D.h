@@ -23,12 +23,13 @@ namespace nle
         Scene *m_root_scene;
         Window *m_parent_window;
         float m_max_render_distance;
-        std::unordered_map<uint8_t, RenderLayerAttributes> m_render_layer_attributes;
+        std::unordered_map<RenderLayer, RenderLayerAttributes> m_render_layer_attributes;
         bool m_time_strict_mode;
 
         double m_render_timestamp;
         double m_input_timestamp;
         std::thread m_thr_input;
+        Shader *m_grid;
 
         void render_recursively(Object3D *root);
         void render_scene(Scene *scene);
@@ -37,22 +38,10 @@ namespace nle
         void process_mouse_input(GLfloat dx, GLfloat dy);
 
     public:
-        enum RenderLayer
-        {
-            _0 = 0,
-            _1,
-            _2,
-            _3,
-            _4,
-            _5,
-            _6,
-            _7
-        };
 
         Renderer3D(Window *render_target);
         virtual ~Renderer3D();
         void render(MeshInstance *mi);
-        void render(MultiMeshInstance *mmi);
         void set_root_scene(Scene *root);
         Scene *root_scene() const;
         void set_render_layer_attributes(RenderLayer layer, RenderLayerAttributes attributes);

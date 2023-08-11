@@ -16,9 +16,9 @@
 #define prdbg(x, ...) ()
 #endif
 
-#define prerr(x, ...) (printf("\x1b[31mnle::err: " x "\x1b[0m\n", ##__VA_ARGS__))
-#define prwar(x, ...) (printf("\x1b[36mnle::wrn: " x "\x1b[0m\n", ##__VA_ARGS__))
-#define prinf(x, ...) (printf("\x1b[32mnle::inf: " x "\x1b[0m\n", ##__VA_ARGS__))
+#define prerr(x, ...) (printf("\x1b[31m" x "\x1b[0m\n", ##__VA_ARGS__))
+#define prwar(x, ...) (printf("\x1b[36m" x "\x1b[0m\n", ##__VA_ARGS__))
+#define prinf(x, ...) (printf("\x1b[32m" x "\x1b[0m\n", ##__VA_ARGS__))
 
 #define PI 3.14159265
 #define rad2deg(x) (x * 180.f / PI)

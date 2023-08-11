@@ -11,13 +11,6 @@ namespace nle
 {
     class MeshInstance;
 
-    // enum RenderMode
-    // {
-    //     Fill = GL_FILL,
-    //     Line = GL_LINE,
-    //     Point = GL_POINT
-    // };
-
     class Mesh
     {
     private:
@@ -54,7 +47,7 @@ namespace nle
     private:
         Mesh *m_mesh;
 
-        uint8_t m_render_layer;
+        RenderLayer m_render_layer;
         int m_render_mode;
         bool m_visible;
 
@@ -62,36 +55,8 @@ namespace nle
         MeshInstance(Mesh *mesh);
         Mesh *mesh();
 
-        // void set_render_mode(RenderMode render_mode = RenderMode::Fill);
-
-        // void set_visible(bool visible);
-        // bool visible() const;
-
-        // void set_render_layer(int layer);
-        // int render_layer() const;
-
         friend class Renderer3D;
     };
-
-    // class MultiMesh
-    // {
-    // private:
-    //     std::vector<Mesh *> m_meshes;
-
-    // public:
-    //     MultiMesh(const std::vector<Mesh *> &meshes = {});
-    //     ~MultiMesh();
-    //     std::vector<Mesh *> *meshes();
-    //     MultiMeshInstance *create_instance();
-    // };
-
-    // class MultiMeshInstance : public Object3D
-    // {
-    // public:
-    //     MultiMeshInstance();
-    //     ~MultiMeshInstance();
-    //     friend class Mesh;
-    // };
 
 } // namespace nle
 

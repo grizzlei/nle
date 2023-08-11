@@ -30,46 +30,14 @@ bool RenderObject3D::visible() const
     return m_visible;
 }
 
-void RenderObject3D::set_render_layer(int layer)
+void RenderObject3D::set_render_layer(RenderLayer layer)
 {
     m_render_layer = layer;
 }
 
-int RenderObject3D::render_layer() const
+RenderLayer RenderObject3D::render_layer() const
 {
     return m_render_layer;
 }
 
 } // namespace nle
-
-    // void MeshInstance::set_render_mode(RenderMode render_mode)
-    // {
-    //     m_render_mode = render_mode;
-    //     for (auto *c : this->children())
-    //     {
-    //         if (MeshInstance *m = dynamic_cast<MeshInstance *>(c))
-    //         {
-    //             m->set_render_mode(render_mode);
-    //         }
-    //     }
-    // }
-
-    // void MeshInstance::set_visible(bool visible)
-    // {
-    //     m_visible = visible;
-    // }
-
-    // bool MeshInstance::visible() const
-    // {
-    //     return m_visible;
-    // }
-
-    // void MeshInstance::set_render_layer(int layer)
-    // {
-    //     m_render_layer = layer;
-    // }
-
-    // int MeshInstance::render_layer() const
-    // {
-    //     return m_render_layer;
-    // }

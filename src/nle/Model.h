@@ -7,27 +7,24 @@
 
 namespace nle
 {
+    enum class ModelFormat
+    {
+        OBJ,
+        GLTF
+    };
     class Model
     {
     private:
-        // std::vector<std::vector<float>> m_vertex_groups;
-        // std::vector<std::vector<unsigned int>> m_index_groups;
-        std::vector<float> m_vertices;
-        std::vector<unsigned int> m_indices;
-        // std::vector<Mesh> m_meshes;
-
+        MultiMesh *m_multimesh;
         Shader *m_shader = nullptr;
         Texture *m_texture = nullptr;
-        // MultiMesh *m_multimesh = nullptr;
-        Mesh *m_mesh = nullptr;
 
     public:
-        Model();
-        Model(Shader *shader, Texture *texture = nullptr);
-        Model(const std::string path);
-        MeshInstance *create_instance();
+        Model(const std::string& path, Shader *shader, Texture *texture = nullptr);
+        MultiMeshInstance *create_instance();
         bool load_obj(const std::string &path);
-        Mesh *mesh() const;
+        MultiMesh *multimesh() const;
+        // const std::vector<Mesh>& meshes() const;
         // bool loadGLTF(const std::string& path) .. etc
     };
 } // namespace nle
