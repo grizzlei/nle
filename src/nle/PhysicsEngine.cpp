@@ -42,12 +42,12 @@ namespace nle
 
     void PhysicsEngine::bind_physics_process_callback(std::function<void(Object3D * object, double delta)> callback)
     {
-        m_on_physics_process.bindCallback(callback);
+        m_on_physics_process.bind_callback(callback);
     }
 
     void PhysicsEngine::bind_physics_tick_callback(std::function<void(double)> callback)
     {
-        m_on_physics_tick.bindCallback(callback);
+        m_on_physics_tick.bind_callback(callback);
     }
 
     void PhysicsEngine::process(Object3D *body, double delta_time)

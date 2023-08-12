@@ -5,6 +5,8 @@ namespace nle
 
     Window::Window(GLuint w, GLuint h, const std::string &title)
     {
+        m_input_handler = new InputHandler();
+
         GLenum err = glfwInit();
         if (err != GLFW_TRUE)
         {
@@ -60,7 +62,12 @@ namespace nle
 
     void Window::close()
     {
-        // glfwDestroyWindow(m_handle);
+        glfwSetWindowShouldClose(m_handle, GLFW_TRUE);
+    }
+
+    InputHandler *Window::input_handler()
+    {
+        return m_input_handler;
     }
 
     void Window::set_draw_callback(std::function<void()> dcb)
@@ -70,7 +77,12 @@ namespace nle
 
     void Window::set_cursor_visibility(bool visible)
     {
-        glfwSetInputMode(m_handle, GLFW_CURSOR, visible ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+        glfwSetInputMode(m_handle, GLFW_CURSOR, (m_show_cursor = visible) ? GLFW_CURSOR_NORMAL : GLFW_CURSOR_DISABLED);
+    }
+
+    bool Window::cursor_visibility()
+    {
+        return m_show_cursor;
     }
 
     void Window::set_fullscreen(bool fullscreen)
@@ -86,6 +98,11 @@ namespace nle
         }
     }
 
+    bool Window::fullscreen()
+    {
+        return m_fullscreen;
+    }
+
     bool Window::closed()
     {
         return m_closed;
@@ -99,31 +116,19 @@ namespace nle
             return;
         }
 
-        if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        {
-            glfwSetWindowShouldClose(w->m_handle, GL_TRUE);
-        }
-
-        if(key == GLFW_KEY_F && action == GLFW_PRESS)
-        {
-            w->set_fullscreen(!w->m_fullscreen);
-        }
-
-        if(key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS)
-        {
-            bool visible = glfwGetInputMode(w->m_handle, GLFW_CURSOR) == GLFW_CURSOR_NORMAL;
-            w->set_cursor_visibility(!visible);
-        }
-
-        if (key >= 0 && key < w->m_keys.size())
+        if (key >= 0 && key < w->m_input_handler->keys().size())
         {
             if (action == GLFW_PRESS)
             {
-                w->m_keys[key] = true;
+                if(w->m_input_handler->m_keys[key] != action)
+                    w->m_input_handler->sig_key_pressed.emit(key);
+                w->m_input_handler->set_key_state(key, true);
             }
             else if (action == GLFW_RELEASE)
             {
-                w->m_keys[key] = false;
+                if(w->m_input_handler->m_keys[key] != action)
+                    w->m_input_handler->sig_key_released.emit(key);
+                w->m_input_handler->set_key_state(key, false);
             }
         }
     }

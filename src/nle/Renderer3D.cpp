@@ -121,27 +121,27 @@ namespace nle
         glm::vec3 dposr = c->m_right * c->m_speed;
         glm::vec3 dposu = c->m_up * c->m_speed;
 
-        if (m_parent_window->m_keys[GLFW_KEY_W])
+        if (m_parent_window->input_handler()->keys()[GLFW_KEY_W])
         {
             c->set_position((c->position() += dposf));
         }
-        if (m_parent_window->m_keys[GLFW_KEY_S])
+        if (m_parent_window->input_handler()->keys()[GLFW_KEY_S])
         {
             c->set_position((c->position() -= dposf));
         }
-        if (m_parent_window->m_keys[GLFW_KEY_D])
+        if (m_parent_window->input_handler()->keys()[GLFW_KEY_D])
         {
             c->set_position((c->position() += dposr));
         }
-        if (m_parent_window->m_keys[GLFW_KEY_A])
+        if (m_parent_window->input_handler()->keys()[GLFW_KEY_A])
         {
             c->set_position((c->position() -= dposr));
         }
-        if (m_parent_window->m_keys[GLFW_KEY_E])
+        if (m_parent_window->input_handler()->keys()[GLFW_KEY_E])
         {
             c->set_position((c->position() += dposu));
         }
-        if (m_parent_window->m_keys[GLFW_KEY_Q])
+        if (m_parent_window->input_handler()->keys()[GLFW_KEY_Q])
         {
             c->set_position((c->position() -= dposu));
         }

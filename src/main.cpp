@@ -15,6 +15,21 @@ int main(int argc, char *argv[])
 {
 	nle::Nle app;
 
+	app.window()->input_handler()->key_pressed().bind_callback([&](const int& key){
+		switch(key)
+		{
+			case GLFW_KEY_ESCAPE:
+			app.window()->close();
+			break;
+			case GLFW_KEY_F:
+			app.window()->set_fullscreen(!app.window()->fullscreen());
+			break;
+			case GLFW_KEY_LEFT_CONTROL:
+			app.window()->set_cursor_visibility(!app.window()->cursor_visibility());
+			break;
+		}
+	});
+
 	app.current_scene()->camera()->set_rotation({0.f, 90.f, 0.f});
 	app.current_scene()->light()->set_ambient_intensity(1.0f);
 	app.current_scene()->light()->set_diffuse_intensity(1.f);
