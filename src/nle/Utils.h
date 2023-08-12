@@ -11,7 +11,7 @@
 // #define DEBUG   1
 
 #if defined(DEBUG)
-#define prdbg(x, ...) (printf("\x1b[33m " x "\x1b[0m\n", ##__VA_ARGS__))
+#define prdbg(x, ...) (printf("\x1b[33m" x "\x1b[0m\n", ##__VA_ARGS__))
 #else
 #define prdbg(x, ...) ()
 #endif
