@@ -27,7 +27,7 @@ namespace nle
                  GLfloat diffuse_intensity_location, GLfloat diffuse_direction_location);
         void set_color(GLfloat red, GLfloat green, GLfloat blue);
         void set_ambient_intensity(GLfloat intensity);
-        float ambient_instensity();
+        float ambient_intensity();
         void set_diffuse_intensity(GLfloat intensity);
         float diffuse_intensity();
         void set_specular_intensity(GLfloat intensity);

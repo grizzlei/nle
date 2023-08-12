@@ -3,6 +3,7 @@
 out vec4 vertexColor;
 out vec2 textureCoordinates;
 out vec3 normal;
+out vec3 fragPos;
 
 uniform mat4 model;
 uniform mat4 projection;
@@ -17,4 +18,5 @@ void main() {
     vertexColor = vec4(clamp(pos, 0.f, 1.f), 1.f);
     textureCoordinates = tex;
     normal = mat3(transpose(inverse(model))) * norm;
+    fragPos = (model * vec4(pos, 1.0)).xyz;
 }

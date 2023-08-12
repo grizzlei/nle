@@ -3,6 +3,7 @@
 in vec4 vertexColor;
 in vec2 textureCoordinates;
 in vec3 normal;
+in vec3 fragPos;
 
 out vec4 color;
 
@@ -14,11 +15,20 @@ struct DirectionalLight
     float diffuseIntensity;
 };
 
+struct Material
+{
+    float specularIntensity;
+    float shininess;
+};
+
 uniform int lightingEnabled = 1;
 uniform int textureEnabled = 1;
 uniform int fogEnabled = 1;
 uniform sampler2D texture0;
 uniform DirectionalLight directionalLight;
+uniform Material material;
+
+uniform vec3 eyePosition;
 
 void main() {
 
@@ -30,6 +40,21 @@ void main() {
         float diffuseFactor = max(dot(normalize(normal), normalize(directionalLight.direction)), 0.f);
         vec4 diffuseColor = vec4(directionalLight.color, 1.f) * directionalLight.diffuseIntensity * diffuseFactor * 1.f;
         lightFactor = ambientColor + diffuseColor;
+
+        vec4 specularColor = vec4(0.0f);
+        if(diffuseFactor > 0.0f)
+        {
+            vec3 fragToEye = normalize(eyePosition -  fragPos);
+            vec3 reflectedVertex = normalize(reflect(directionalLight.direction, normalize(normal)));
+
+            float specularFactor = dot(fragToEye, reflectedVertex);
+            if(specularFactor > 0.0f)
+            {
+                specularFactor = pow(specularFactor, material.shininess);
+                specularColor = vec4(directionalLight.color * material.specularIntensity * specularFactor, 1.0f);
+                lightFactor += specularColor;
+            }
+        }
     }
 
     if(textureEnabled == 1)

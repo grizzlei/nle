@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "RenderObject3D.h"
 #include "Texture.h"
+#include "Material.h"
 
 namespace nle
 {
@@ -23,8 +24,9 @@ namespace nle
         std::vector<float> m_vertices;
         std::vector<unsigned int> m_indices;
 
-        Shader *m_shader;
-        Texture *m_texture;
+        Shader *m_shader = nullptr;
+        Texture *m_texture = nullptr;
+        Material *m_material = nullptr;
 
         void load();
 
@@ -37,6 +39,8 @@ namespace nle
         void set_texture(Texture *texture);
         Texture *texture();
         Shader *shader();
+        void set_material(Material *material);
+        Material *material();
         MeshInstance *create_instance();
 
         friend class Renderer3D;

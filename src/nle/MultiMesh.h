@@ -26,5 +26,6 @@ namespace nle
         MultiMeshInstance(MultiMesh *mm);
         ~MultiMeshInstance();
         MultiMesh *multimesh() const;
+        void set_material_for_meshes(Material *material);
     };
 } // namespace nle

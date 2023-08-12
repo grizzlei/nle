@@ -143,6 +143,16 @@ namespace nle
         return m_shader;
     }
 
+    void Mesh::set_material(Material *material)
+    {
+        m_material = material;
+    }
+
+    Material *Mesh::material()
+    {
+        return m_material;
+    }
+
     MeshInstance *Mesh::create_instance()
     {
         MeshInstance *mi = new MeshInstance(this);

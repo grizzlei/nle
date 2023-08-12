@@ -41,4 +41,12 @@ MultiMesh *MultiMeshInstance::multimesh() const
     return m_multimesh;
 }
 
+void MultiMeshInstance::set_material_for_meshes(Material *material)
+{
+    for(auto* c : m_multimesh->meshes())
+    {
+        c->set_material(material);
+    }
+}
+
 } // namespace nle

@@ -35,7 +35,7 @@ namespace nle
         m_ambient_intensity = intensity;
     }
 
-    float Light::ambient_instensity()
+    float Light::ambient_intensity()
     {
         return m_ambient_intensity;
     }

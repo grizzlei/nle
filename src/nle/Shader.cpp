@@ -119,8 +119,6 @@ namespace nle
         {
             compile_shaders(vertex_source, fragment_source);
         }
-
-        prdbg("finished compiling %d", m_program);
     }
 
     void Shader::clear()

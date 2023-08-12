@@ -216,6 +216,9 @@ namespace nle
         GLuint unf_diffuse_intensity = mi->mesh()->shader()->uniform_location("directionalLight.diffuseIntensity");
         GLuint unf_light_enabled = mi->mesh()->shader()->uniform_location("lightingEnabled");
         GLuint unf_texture_enabled = mi->mesh()->shader()->uniform_location("textureEnabled");
+        GLuint unf_specular_intensity = mi->mesh()->shader()->uniform_location("material.specularIntensity");
+        GLuint unf_shininess = mi->mesh()->shader()->uniform_location("material.shininess");
+        GLuint unf_eye_position = mi->mesh()->shader()->uniform_location("eyePosition");
 
         if (mi->mesh()->texture())
         {
@@ -237,6 +240,11 @@ namespace nle
             glUniform1i(unf_light_enabled, 0);
         }
 
+        if(mi->mesh()->material())
+        {
+            mi->mesh()->material()->use(unf_specular_intensity, unf_shininess);
+        }
+
         glm::mat4 model = glm::mat4(1.f);
         glm::mat4 projection = glm::perspective(45.f, (GLfloat)m_parent_window->m_width / (GLfloat)m_parent_window->m_height, 0.1f, m_max_render_distance);
 
@@ -249,6 +257,7 @@ namespace nle
         glUniformMatrix4fv(unf_model, 1, GL_FALSE, glm::value_ptr(model));
         glUniformMatrix4fv(unf_proj, 1, GL_FALSE, glm::value_ptr(projection));
         glUniformMatrix4fv(unf_view, 1, GL_FALSE, glm::value_ptr(s->camera()->get_view_matrix()));
+        glUniform3f(unf_eye_position, s->camera()->position().x, s->camera()->position().y, s->camera()->position().z);
 
         glBindVertexArray(mi->mesh()->m_vao);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mi->mesh()->m_ebo);
