@@ -66,6 +66,7 @@ namespace nle
             ImGui::TextWrapped("controls:");
             ImGui::TextWrapped("[ctrl] - enable/disable free roam");
             ImGui::TextWrapped("[f] - enable/disable fullscreen");
+            ImGui::TextWrapped("[g] - enable/disable gui");
 
             
             ImGui::End();

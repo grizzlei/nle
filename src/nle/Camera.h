@@ -11,7 +11,7 @@ namespace nle
         float m_speed;
         float m_turn_speed;
 
-        bool m_locked_to_mouse = true;
+        bool m_locked_to_mouse = false;
         bool m_free_roam = false;
 
         glm::vec3 m_front;

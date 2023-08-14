@@ -43,4 +43,9 @@ namespace nle
     {
         return m_render_objects;
     }
+    void Scene::add_child(Object3D *child)
+    {
+        Object3D::add_child(child);
+        register_render_object(child);
+    }
 } // namespace nle

@@ -23,6 +23,7 @@ namespace nle
         Light *light();
         void register_render_object(Object3D *object);
         std::vector<Object3D*> render_objects();
+        void add_child(Object3D *child) override;
 
         friend class Renderer3D;
     };
