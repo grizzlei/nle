@@ -81,7 +81,7 @@ namespace nle
         for(auto *i : scene->m_render_objects)
         {
             MeshInstance *mi;
-            if(mi = dynamic_cast<MeshInstance*>(i))
+            if((mi = dynamic_cast<MeshInstance*>(i)))
             {
                 render(mi);
             }

@@ -118,6 +118,7 @@ namespace nle
 
         // prdbg("key: %d action %d mode %d", key, action, mode);
 
+        key = (unsigned int)key;
         if (key >= 0 && key < w->m_input_handler->keys().size())
         {
             if ((action == GLFW_PRESS) || (action == GLFW_REPEAT))

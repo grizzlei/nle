@@ -11,8 +11,6 @@ namespace nle
     Model::Model(const std::string &path, Shader *shader, Texture *texture)
         : m_shader(shader), m_texture(texture)
     {
-        ModelFormat format;
-
         std::string fmt = path.substr(path.find_last_of("."));
         
         std::transform(fmt.begin(), fmt.end(), fmt.begin(),
@@ -71,38 +69,39 @@ namespace nle
 
     bool Model::load_gltf(const std::string &path)
     {
-        tinygltf::Model model;
-        tinygltf::TinyGLTF loader;
-        std::string err, warn;
+        // tinygltf::Model model;
+        // tinygltf::TinyGLTF loader;
+        // std::string err, warn;
 
-        bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, path.c_str());
-        if(!warn.empty())
-        {
-            prwar("%s",warn.c_str());
-        }
-        if(!err.empty())
-        {
-            prerr("%s",err.c_str());
-            return ret;
-        }
+        // bool ret = loader.LoadASCIIFromFile(&model, &err, &warn, path.c_str());
+        // if(!warn.empty())
+        // {
+        //     prwar("%s",warn.c_str());
+        // }
+        // if(!err.empty())
+        // {
+        //     prerr("%s",err.c_str());
+        //     return ret;
+        // }
 
-        m_multimesh = new MultiMesh();
-        for(const auto& it : model.meshes)
-        {
-            std::vector<float> vertices;
-            std::vector<unsigned int> indices;
+        // m_multimesh = new MultiMesh();
+        // for(const auto& it : model.meshes)
+        // {
+        //     std::vector<float> vertices;
+        //     std::vector<unsigned int> indices;
 
-            for(const auto& it1 : it.primitives)
-            {
-                // it1.
-            }
+        //     for(const auto& it1 : it.primitives)
+        //     {
+        //         for(const auto& it2 : it1.targets)
+        //     }
 
 
-            Shader *s = m_shader ? m_shader : DEFAULT_SHADER;
-            m_multimesh->meshes().push_back(new Mesh(vertices, indices, s, m_texture));
-        }
+        //     Shader *s = m_shader ? m_shader : DEFAULT_SHADER;
+        //     m_multimesh->meshes().push_back(new Mesh(vertices, indices, s, m_texture));
+        // }
 
-        return ret;
+        // return ret;
+        return path.empty();
     }
 
     MultiMesh *Model::multimesh() const

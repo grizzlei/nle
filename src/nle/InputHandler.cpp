@@ -64,7 +64,7 @@ void InputHandler::set_mouse_state(int x, int y)
 
 const std::array<bool, 1024> &InputHandler::keys()
 {
-    m_keys;
+    return m_keys;
 }
 
 bool InputHandler::key_state(int key)

@@ -11,8 +11,6 @@
 
 #include "FastNoiseLite.h"
 
-#include <iostream>
-
 int main(int argc, char *argv[])
 {
 	nle::Nle app;
@@ -80,9 +78,6 @@ int main(int argc, char *argv[])
 
 	auto *car = mod_car.create_instance();
 	app.current_scene()->add_child(car);
-	prdbg("car meshes: %d", car->multimesh()->meshes().size());
-
-	// std::cout << sdump << std::endl;
 
 	app.run();
 	prdbg("%s", app.current_scene()->to_json().dump().c_str());
