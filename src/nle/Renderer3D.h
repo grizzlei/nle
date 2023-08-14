@@ -5,6 +5,7 @@
 #include "Window.h"
 #include "Mesh.h"
 #include "MultiMesh.h"
+#include "ImGUI_GLFW.h"
 
 #include <thread>
 #include <unordered_map>
@@ -22,13 +23,15 @@ namespace nle
     private:
         Scene *m_root_scene;
         Window *m_parent_window;
+        ImGUI_GLFW *m_imgui;
+
         float m_max_render_distance;
         std::unordered_map<RenderLayer, RenderLayerAttributes> m_render_layer_attributes;
         bool m_time_strict_mode;
 
         double m_render_timestamp;
-        double m_input_timestamp;
-        std::thread m_thr_input;
+        // double m_input_timestamp;
+        // std::thread m_thr_input;
         Shader *m_grid;
 
         void render_recursively(Object3D *root);

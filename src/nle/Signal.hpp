@@ -19,17 +19,17 @@ namespace nle
         {
         }
 
-        void emit(const T &message, ExtraArgs... args)
+        void emit(const T &message, ExtraArgs... args, bool async = true)
         {
             for (const auto &it : m_callbacks)
             {
-                try
+                if(async)
                 {
                     std::thread(it, message, args...).detach();
                 }
-                catch (const std::exception &e)
+                else
                 {
-                    prerr("%s", e.what());
+                    it(message, args...);
                 }
             }
         }
@@ -37,6 +37,11 @@ namespace nle
         void bind_callback(callback_t callback)
         {
             m_callbacks.push_back(callback);
+        }
+
+        void unbind_all()
+        {
+            m_callbacks.clear();
         }
 
     private:

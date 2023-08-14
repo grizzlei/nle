@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
 			break;
 			case GLFW_KEY_LEFT_CONTROL:
 			app.window()->set_cursor_visibility(!app.window()->cursor_visibility());
+			app.current_scene()->camera()->set_free_roam(!app.current_scene()->camera()->free_roam());
 			break;
 			case GLFW_KEY_DOWN:
 			app.current_scene()->light()->set_diffuse_intensity(app.current_scene()->light()->diffuse_intensity()-0.1);
@@ -47,6 +48,7 @@ int main(int argc, char *argv[])
 	});
 
 	app.current_scene()->camera()->set_rotation({0.f, 90.f, 0.f});
+	app.current_scene()->camera()->set_position({0.f, 100.f, 0.f});
 	app.current_scene()->light()->set_position(glm::vec3(0.f, 50.f, 0.f));
 	app.current_scene()->light()->set_rotation({1.f, 0.f, 0.f});
 	app.current_scene()->light()->set_ambient_intensity(0.5f);
@@ -77,6 +79,7 @@ int main(int argc, char *argv[])
 			mm->set_material_for_meshes(&m);
 			app.current_scene()->add_child(mm);
 
+			// mm->set_position({x * 2, 0.f, y * 2});
 			mm->set_position({x * 2, scaled_height * 2, y * 2});
 		}
 	}

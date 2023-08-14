@@ -26,8 +26,9 @@ namespace nle
         Window *window();
         Renderer3D *renderer();
         TextureFactory *texture_factory();
-        Scene *current_scene();
         PhysicsEngine *physics_engine();
+        Scene *current_scene();
+        void set_current_scene(Scene *s);
         void run();
     };
 

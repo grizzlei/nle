@@ -12,7 +12,8 @@ namespace nle
     Renderer3D::Renderer3D(Window *render_target)
         : m_parent_window(render_target),
         m_max_render_distance(10000.f),
-        m_time_strict_mode(false)
+        m_time_strict_mode(false),
+        m_imgui(new ImGUI_GLFW(render_target->m_handle))
     {
         m_grid = new Shader("shader/grid_vert.glsl", "shader/grid_frag.glsl", true);
 
@@ -28,28 +29,32 @@ namespace nle
                 glViewport(0, 0, this->m_parent_window->m_width, this->m_parent_window->m_height);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 this->render_scene(this->m_root_scene);
+                if(this->m_imgui->visible())
+                {
+                    this->m_imgui->render();
+                }
                 m_render_timestamp = get_time_sec();
             });
 
-        m_input_timestamp = get_time_sec();
-        m_thr_input = std::thread(
-            [this]()
-            {
-                while (!this->m_parent_window->m_closed)
-                {
-                    this->process_keyboard_input();
-                    this->process_mouse_input(this->m_parent_window->m_mouse_delta.x, this->m_parent_window->m_mouse_delta.y);
-                    this->m_parent_window->m_mouse_delta = glm::vec2(0.f);
+        // m_input_timestamp = get_time_sec();
+        // m_thr_input = std::thread(
+        //     [this]()
+        //     {
+        //         while (!this->m_parent_window->m_closed)
+        //         {
+        //             this->process_keyboard_input();
+        //             this->process_mouse_input(this->m_parent_window->m_mouse_delta.x, this->m_parent_window->m_mouse_delta.y);
+        //             this->m_parent_window->m_mouse_delta = glm::vec2(0.f);
 
-                    std::this_thread::sleep_for(std::chrono::nanoseconds(NLE_INPUT_PROCESS_SLEEP_TIME));
-                }
-            });
+        //             std::this_thread::sleep_for(std::chrono::nanoseconds(NLE_INPUT_PROCESS_SLEEP_TIME));
+        //         }
+        //     });
     }
 
     Renderer3D::~Renderer3D()
     {
-        if (m_thr_input.joinable())
-            m_thr_input.join();
+        // if (m_thr_input.joinable())
+        //     m_thr_input.join();
     }
 
     void Renderer3D::render_recursively(Object3D *root)
@@ -104,79 +109,6 @@ namespace nle
         glEnable(GL_LIGHTING);
         glDepthFunc(GL_LEQUAL);
         glClearColor(0.53f, 0.8f, 0.92f, 1.f);
-    }
-
-    void Renderer3D::process_keyboard_input()
-    {
-        constexpr double limit = 1.f / 60.f;
-        double now = get_time_sec();
-
-        if ((now - m_input_timestamp) < limit)
-        {
-            return;
-        }
-
-        Camera *c = m_root_scene->camera();
-        glm::vec3 dposf = c->m_front * c->m_speed;
-        glm::vec3 dposr = c->m_right * c->m_speed;
-        glm::vec3 dposu = c->m_up * c->m_speed;
-
-        if (m_parent_window->input_handler()->keys()[GLFW_KEY_W])
-        {
-            c->set_position((c->position() += dposf));
-        }
-        if (m_parent_window->input_handler()->keys()[GLFW_KEY_S])
-        {
-            c->set_position((c->position() -= dposf));
-        }
-        if (m_parent_window->input_handler()->keys()[GLFW_KEY_D])
-        {
-            c->set_position((c->position() += dposr));
-        }
-        if (m_parent_window->input_handler()->keys()[GLFW_KEY_A])
-        {
-            c->set_position((c->position() -= dposr));
-        }
-        if (m_parent_window->input_handler()->keys()[GLFW_KEY_E])
-        {
-            c->set_position((c->position() += dposu));
-        }
-        if (m_parent_window->input_handler()->keys()[GLFW_KEY_Q])
-        {
-            c->set_position((c->position() -= dposu));
-        }
-
-        m_input_timestamp = get_time_sec();
-    }
-
-    void Renderer3D::process_mouse_input(GLfloat dx, GLfloat dy)
-    {
-        if (m_root_scene)
-        {
-            Camera *c = m_root_scene->camera();
-            if (c)
-            {
-                dx *= c->turn_speed();
-                dy *= c->turn_speed();
-
-                glm::vec3 camrot = c->rotation();
-
-                GLfloat pitch = camrot.x + dy;
-                GLfloat yaw = camrot.y + dx;
-
-                if (pitch > 89.f)
-                {
-                    pitch = 89.f;
-                }
-                if (pitch < -89.f)
-                {
-                    pitch = -89.f;
-                }
-
-                c->set_rotation({pitch, yaw, 0.f});
-                c->update();
-            }
-        }
     }
 
     void Renderer3D::render(MeshInstance *mi)
@@ -274,6 +206,16 @@ namespace nle
     void Renderer3D::set_root_scene(Scene *root)
     {
         m_root_scene = root;
+
+        m_parent_window->input_handler()->mouse_moved().unbind_all();
+        m_parent_window->input_handler()->key_pressed().unbind_all();
+        
+        m_parent_window->input_handler()->mouse_moved().bind_callback(
+            std::bind(&Camera::on_mouse_motion, root->camera(), std::placeholders::_1, std::placeholders::_2)
+        );
+        m_parent_window->input_handler()->key_pressed().bind_callback(
+            std::bind(&Camera::on_key_pressed, root->camera(), std::placeholders::_1)
+        );
     }
 
     Scene *Renderer3D::root_scene() const

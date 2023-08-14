@@ -120,14 +120,10 @@ namespace nle
         {
             if (action == GLFW_PRESS)
             {
-                if(w->m_input_handler->m_keys[key] != action)
-                    w->m_input_handler->sig_key_pressed.emit(key);
                 w->m_input_handler->set_key_state(key, true);
             }
             else if (action == GLFW_RELEASE)
             {
-                if(w->m_input_handler->m_keys[key] != action)
-                    w->m_input_handler->sig_key_released.emit(key);
                 w->m_input_handler->set_key_state(key, false);
             }
         }
@@ -140,21 +136,6 @@ namespace nle
         {
             return;
         }
-
-        if (!w->m_mouse_moved_once)
-        {
-            w->m_mouse_last = {mouse_x, mouse_y};
-            w->m_mouse_moved_once = true;
-            return;
-        }
-
-        glm::vec2 now = glm::vec2(mouse_x, mouse_y);
-
-        w->m_mouse_delta.x = now.x - w->m_mouse_last.x;
-        // because y increases going downwards on the screen.
-        w->m_mouse_delta.y = w->m_mouse_last.y - now.y;
-
-        w->m_mouse_last = now;
-        // prdbg("mouse dx: %.6f dy: %.6f", w->m_mouse_delta.x, w->m_mouse_delta.y);
+        w->m_input_handler->set_mouse_state(mouse_x, mouse_y);
     }
 } // namespace nle
