@@ -29,26 +29,30 @@ int main(int argc, char *argv[])
 			app.current_scene()->camera()->set_free_roam(!app.current_scene()->camera()->free_roam());
 			break;
 			case GLFW_KEY_DOWN:
-			app.current_scene()->light()->set_diffuse_intensity(app.current_scene()->light()->diffuse_intensity()-0.1);
+			// app.current_scene()->light()->set_diffuse_intensity(app.current_scene()->light()->diffuse_intensity()-0.1);
+			app.current_scene()->camera()->set_rotation(app.current_scene()->camera()->rotation()-glm::vec3(1.f, 0.f, 0.f));
 			prdbg("%f", app.current_scene()->light()->diffuse_intensity());
 			break;
 			case GLFW_KEY_UP:
-			app.current_scene()->light()->set_diffuse_intensity(app.current_scene()->light()->diffuse_intensity()+0.1);
+			// app.current_scene()->light()->set_diffuse_intensity(app.current_scene()->light()->diffuse_intensity()+0.1);
+			app.current_scene()->camera()->set_rotation(app.current_scene()->camera()->rotation()+glm::vec3(1.f, 0.f, 0.f));
 			prdbg("%f", app.current_scene()->light()->diffuse_intensity());
 			break;
 			case GLFW_KEY_LEFT:
-			app.current_scene()->light()->set_ambient_intensity(app.current_scene()->light()->ambient_intensity()-0.1);
+			app.current_scene()->camera()->set_rotation(app.current_scene()->camera()->rotation()-glm::vec3(0.f, 1.f, 0.f));
+			// app.current_scene()->light()->set_ambient_intensity(app.current_scene()->light()->ambient_intensity()-0.1);
 			prdbg("%f", app.current_scene()->light()->ambient_intensity());
 			break;
 			case GLFW_KEY_RIGHT:
-			app.current_scene()->light()->set_ambient_intensity(app.current_scene()->light()->ambient_intensity()+0.1);
+			app.current_scene()->camera()->set_rotation(app.current_scene()->camera()->rotation()+glm::vec3(0.f, 1.f, 0.f));
+			// app.current_scene()->light()->set_ambient_intensity(app.current_scene()->light()->ambient_intensity()+0.1);
 			prdbg("%f", app.current_scene()->light()->ambient_intensity());
 			break;
 		}
 	});
 
-	app.current_scene()->camera()->set_rotation({0.f, 90.f, 0.f});
-	app.current_scene()->camera()->set_position({0.f, 100.f, 0.f});
+	app.current_scene()->camera()->set_rotation({-15.f, 45.f, 0.f});
+	app.current_scene()->camera()->set_position({-50.f, 50.f, -50.f});
 	app.current_scene()->light()->set_position(glm::vec3(0.f, 50.f, 0.f));
 	app.current_scene()->light()->set_rotation({1.f, 0.f, 0.f});
 	app.current_scene()->light()->set_ambient_intensity(0.5f);
@@ -84,7 +88,7 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	prinf("%d blocks created", app.current_scene()->render_objects().size());
+	prdbg("%d blocks created", app.current_scene()->render_objects().size());
 	
 	auto *h = mod_camera.create_instance();
 	// h->set_material_for_meshes(&m);

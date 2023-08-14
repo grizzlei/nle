@@ -56,6 +56,18 @@ namespace nle
         m_free_roam = free_roam;
     }
 
+    void Camera::set_rotation(glm::vec3 rotation)
+    {
+        Object3D::set_rotation(rotation);
+        update();
+    }
+
+    void Camera::set_position(glm::vec3 position)
+    {
+        Object3D::set_position(position);
+        update();
+    }
+
     void Camera::update()
     {
         m_front.x = cos(glm::radians(rotation().y)) * cos(glm::radians(rotation().x));
@@ -106,7 +118,7 @@ namespace nle
         {
             return;
         }
-        
+
         glm::vec3 dposf = m_front * m_speed;
         glm::vec3 dposr = m_right * m_speed;
         glm::vec3 dposu = m_up * m_speed;
