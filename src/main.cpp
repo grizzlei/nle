@@ -11,6 +11,8 @@
 
 #include "FastNoiseLite.h"
 
+#include <iostream>
+
 int main(int argc, char *argv[])
 {
 	nle::Nle app;
@@ -54,6 +56,7 @@ int main(int argc, char *argv[])
 		}
 	});
 
+	app.current_scene()->set_id("scene_root");
 	app.current_scene()->camera()->set_rotation({-15.f, 0.f, 0.f});
 	app.current_scene()->camera()->set_position({-50.f, 50.f, -50.f});
 	app.current_scene()->light()->set_position(glm::vec3(0.f, 100.f, 0.f));
@@ -77,8 +80,12 @@ int main(int argc, char *argv[])
 
 	auto *car = mod_car.create_instance();
 	app.current_scene()->add_child(car);
+	prdbg("car meshes: %d", car->multimesh()->meshes().size());
+
+	// std::cout << sdump << std::endl;
 
 	app.run();
+	prdbg("%s", app.current_scene()->to_json().dump().c_str());
 
 	return (0);
 }

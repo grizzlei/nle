@@ -95,7 +95,7 @@ namespace nle
             prerr("child already added");
     }
 
-    void Object3D::set_id(const std::string id)
+    void Object3D::set_id(const std::string& id)
     {
         m_id = id;
     }

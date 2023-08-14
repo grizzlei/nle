@@ -37,6 +37,7 @@ namespace nle
         void set_free_roam(bool free_roam);
         void set_rotation(glm::vec3 rotation) override;
         void set_position(glm::vec3 position) override;
+        void set_id(const std::string& id) override;
 
         friend class Renderer3D;
     };

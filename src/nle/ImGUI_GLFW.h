@@ -8,6 +8,10 @@
 
 namespace nle
 {
+    namespace imgui
+    {
+        
+    }
 
 class ImGUI_GLFW
 {

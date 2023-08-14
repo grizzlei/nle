@@ -89,6 +89,11 @@ namespace nle
         update();
     }
 
+    void Camera::set_id(const std::string &id)
+    {
+        Object3D::set_id("camera_" + id);
+    }
+
     void Camera::update()
     {
         m_front.x = cos(glm::radians(rotation().y)) * cos(glm::radians(rotation().x));
