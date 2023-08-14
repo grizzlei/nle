@@ -12,7 +12,7 @@ namespace nle
         float m_turn_speed;
 
         bool m_locked_to_mouse = true;
-        bool m_free_roam = true;
+        bool m_free_roam = false;
 
         glm::vec3 m_front;
         glm::vec3 m_up;
@@ -33,6 +33,7 @@ namespace nle
         void set_turn_speed(float turnSpeed);
         float turn_speed() const;
         bool free_roam() const;
+        void look_at(glm::vec3 position);
         void set_free_roam(bool free_roam);
         void set_rotation(glm::vec3 rotation) override;
         void set_position(glm::vec3 position) override;

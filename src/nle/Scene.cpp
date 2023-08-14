@@ -21,6 +21,11 @@ namespace nle
         return m_camera;
     }
 
+    void Scene::set_camera(Camera *c)
+    {
+        m_camera = c;
+    }
+
     Light *Scene::light()
     {
         return m_light;

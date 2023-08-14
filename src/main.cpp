@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 		}
 	});
 
-	app.current_scene()->camera()->set_rotation({-15.f, 45.f, 0.f});
+	app.current_scene()->camera()->set_rotation({-15.f, 0.f, 0.f});
 	app.current_scene()->camera()->set_position({-50.f, 50.f, -50.f});
 	app.current_scene()->light()->set_position(glm::vec3(0.f, 50.f, 0.f));
 	app.current_scene()->light()->set_rotation({1.f, 0.f, 0.f});
@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 	app.current_scene()->light()->set_diffuse_intensity(1.0f);
 	app.current_scene()->light()->set_enabled(true);
 
-	nle::Material m(1.0f, 32);
+	nle::Material material(1.0f, 32);
 
 	auto rla = app.renderer()->render_layer_attributes(nle::RenderLayer::_0);
 	rla.render_distance = 1000;
@@ -80,10 +80,8 @@ int main(int argc, char *argv[])
 		{
 			int scaled_height = static_cast<int>((1.f + noise.GetNoise((float)x, (float)y)) * 10);
 			auto * mm = mod_minecraft_block.create_instance();
-			mm->set_material_for_meshes(&m);
+			mm->set_material_for_meshes(&material);
 			app.current_scene()->add_child(mm);
-
-			// mm->set_position({x * 2, 0.f, y * 2});
 			mm->set_position({x * 2, scaled_height * 2, y * 2});
 		}
 	}
@@ -94,6 +92,34 @@ int main(int argc, char *argv[])
 	// h->set_material_for_meshes(&m);
 	h->set_position(app.current_scene()->light()->position());
 	app.current_scene()->add_child(h);
+
+
+	auto * oc = app.current_scene()->camera();
+	nle::Camera nc({50.f, 50.f, -50.f});
+	// nc.set_rotation({-15.f, 90.f, 0.f});
+	nc.look_at({0.f, 0.f, 0.f});
+
+	nle::Camera nc1({50.f, 50.f, 50.f});
+	// nc1.set_rotation({-15.f, 180.f, 0.f});
+	nc1.look_at({0.f, 0.f, 0.f});
+
+	nle::Camera nc2({-50.f, 50.f, -50.f});
+	// nc2.set_rotation({-15.f, 270.f, 0.f});
+	nc2.look_at({0.f, 0.f, 0.f});
+
+	std::thread([&](){
+		while(!app.window()->closed())
+		{
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			app.current_scene()->set_camera(&nc);
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			app.current_scene()->set_camera(&nc1);
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			app.current_scene()->set_camera(&nc2);
+			std::this_thread::sleep_for(std::chrono::seconds(2));
+			app.current_scene()->set_camera(oc);
+		}
+	}).detach();
 
 	app.run();
 

@@ -63,6 +63,11 @@ namespace nle
             ImGui::TextWrapped("hasan karaman - 2023");
             ImGui::TextWrapped("experimental opengl renderer and physics engine.");
             ImGui::Separator();
+            ImGui::TextWrapped("controls:");
+            ImGui::TextWrapped("[ctrl] - enable/disable free roam");
+            ImGui::TextWrapped("[f] - enable/disable fullscreen");
+
+            
             ImGui::End();
         }
 
