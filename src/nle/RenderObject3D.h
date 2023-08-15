@@ -8,9 +8,9 @@ namespace nle
 {
 enum RenderMode
 {
-    Fill = GL_FILL,
+    Point = GL_POINT,
     Line = GL_LINE,
-    Point = GL_POINT
+    Fill = GL_FILL
 };
 
 enum class RenderLayer
