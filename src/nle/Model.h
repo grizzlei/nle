@@ -18,6 +18,7 @@ namespace nle
         MultiMesh *m_multimesh;
         Shader *m_shader = nullptr;
         Texture *m_texture = nullptr;
+        std::vector<Texture*> m_textures;
 
     public:
         Model(const std::string& path, Shader *shader, Texture *texture = nullptr);
@@ -25,8 +26,6 @@ namespace nle
         bool load_obj(const std::string &path);
         bool load_gltf(const std::string &path);
         MultiMesh *multimesh() const;
-        // const std::vector<Mesh>& meshes() const;
-        // bool loadGLTF(const std::string& path) .. etc
     };
 } // namespace nle
 

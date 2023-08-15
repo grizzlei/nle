@@ -15,8 +15,6 @@ int main(int argc, char *argv[])
 {
 	nle::Nle app;
 
-	nle::MultiMeshInstance *hasan;
-
 	app.window()->input_handler()->key_pressed().bind_callback([&](const int& key){
 		switch(key)
 		{
@@ -33,35 +31,10 @@ int main(int argc, char *argv[])
 			case GLFW_KEY_G:
 			app.renderer()->gui()->set_visible(!app.renderer()->gui()->visible());
 			break;
-			case GLFW_KEY_Z:
-			// app.renderer()->gui()->set_visible(!app.renderer()->gui()->visible());
-			app.current_scene()->light()->set_position(app.current_scene()->light()->position() - glm::vec3(1.0, 0.f, 0.f));
-	hasan->set_position(app.current_scene()->light()->position());
-			break;
-			case GLFW_KEY_X:
-			app.current_scene()->light()->set_position(app.current_scene()->light()->position() + glm::vec3(1.0, 0.f, 0.f));
-	hasan->set_position(app.current_scene()->light()->position());
-			break;
-			case GLFW_KEY_C:
-			app.current_scene()->light()->set_position(app.current_scene()->light()->position() - glm::vec3(0.0, 1.f, 0.f));
-	hasan->set_position(app.current_scene()->light()->position());
-			break;
-			case GLFW_KEY_V:
-			app.current_scene()->light()->set_position(app.current_scene()->light()->position() + glm::vec3(0.0, 1.f, 0.f));
-	hasan->set_position(app.current_scene()->light()->position());
-			break;
-			case GLFW_KEY_B:
-			app.current_scene()->light()->set_rotation(app.current_scene()->light()->rotation() - glm::vec3(0.0, 1.f, 0.f));
-	hasan->set_rotation(app.current_scene()->light()->rotation());
-			break;
-			case GLFW_KEY_N:
-			app.current_scene()->light()->set_rotation(app.current_scene()->light()->rotation() + glm::vec3(0.0, 1.f, 0.f));
-	hasan->set_rotation(app.current_scene()->light()->rotation());
-			break;
 		}
 	});
 
-	app.current_scene()->set_id("scene_root");
+	app.current_scene()->set_id("root");
 	app.current_scene()->camera()->set_rotation({-15.f, 0.f, 0.f});
 	app.current_scene()->camera()->set_position({-50.f, 50.f, -50.f});
 	app.current_scene()->light()->set_position(glm::vec3(0.f, 100.f, 0.f));
@@ -71,37 +44,96 @@ int main(int argc, char *argv[])
 	app.current_scene()->light()->set_enabled(true);
 
 	app.renderer()->gui()->set_draw_callback([&](){
+		ImGuiIO& io = ImGui::GetIO();
+		
+		glm::vec3 v3val;
+		float fval;
+		bool bval;
+		int ival;
+
+		static float right_window_w = 300.f;
+		static float bottom_window_h = 300.f;
+		static bool file_dialog_open = false;
+		static bool about_open = false;
+		static char inbuf[512] = {0};
+		static nle::RenderObject3D * selected_obj = nullptr;
+		ImVec2 menubar_size;
+		ImVec2 display_size = io.DisplaySize;
+
         if(ImGui::BeginMainMenuBar())
         {
-            if(ImGui::BeginMenu("File"))
+            if(ImGui::BeginMenu("file"))
             {
-                if(ImGui::MenuItem("Load Model"))
-                {
-                    prdbg("Load Model");
-                }
-                if(ImGui::MenuItem("Quit"))
+				file_dialog_open = ImGui::MenuItem("load model");
+
+                if(ImGui::MenuItem("quit"))
                 {
 					app.window()->close();
                 }
                 ImGui::EndMenu();
             }
+            if(ImGui::BeginMenu("edit"))
+            {
+				ImGui::MenuItem("preferences");
+                ImGui::EndMenu();
+            }
+            if(ImGui::BeginMenu("help"))
+            {
+				about_open = ImGui::MenuItem("about");
+
+                ImGui::EndMenu();
+            }
+
+			menubar_size = ImGui::GetWindowSize();
 
             ImGui::EndMainMenuBar();
         }
 
-        if(ImGui::Begin("nice little engine", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
-        {
-            ImGui::TextWrapped("https://github.com/grizzlei/nle");
-            ImGui::TextWrapped("hasan karaman - 2023");
-            ImGui::TextWrapped("experimental opengl renderer");
-            ImGui::Separator();
-			ImGui::BeginTabBar("tbar0");
+		if(file_dialog_open)
+		{
+			ImGui::SetNextWindowPos(ImVec2(display_size.x * 0.5f, display_size.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f,0.5f));
+			if(ImGui::Begin("enter path to *.obj file", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				ImGui::InputText("model path", inbuf, sizeof(inbuf) -1);
+				if(ImGui::Button("load"))
+				{
+					std::string path(inbuf, strlen(inbuf)); // = std::string(buf, sizeof(buf));
+					nle::Model mod(path, nle::DEFAULT_SHADER);
+					auto * instance = mod.create_instance();
+					app.current_scene()->add_child(instance);
+					file_dialog_open = false;
+				}
+				ImGui::SameLine();
+				if(ImGui::Button("cancel"))
+				{
+					file_dialog_open = false;
+				}
+				ImGui::End();
+			}
+		}
 
-			glm::vec3 v3val;
-			float fval;
-			bool bval;
-			int ival;
+		if(about_open)
+		{
+			ImGui::SetNextWindowPos(ImVec2(display_size.x * 0.5f, display_size.y * 0.5f), ImGuiCond_Always, ImVec2(0.5f,0.5f));
+			if(ImGui::Begin("about", nullptr, ImGuiWindowFlags_NoCollapse))
+			{
+				ImGui::Text("https://github.com/grizzlei/nle");
+				ImGui::Text("hasan karaman - 2023");
+				ImGui::Text("experimental opengl renderer");
+				about_open = !ImGui::Button("close");
+				ImGui::End();
+			}
+		}
+
+		ImGui::SetNextWindowPos(ImVec2(0.f, menubar_size.y), ImGuiCond_Always, ImVec2(0.f,0.f));
+		ImGui::SetNextWindowSize({0.f, io.DisplaySize.y - menubar_size.y});
+        if(ImGui::Begin("control panel", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse))
+        {
 			// renderer settings
+            ImGui::TextWrapped("renderer settings");
+			bval = app.window()->fullscreen();
+			ImGui::Checkbox("fullscreen", &bval);
+			app.window()->set_fullscreen(bval);
 			auto rla = app.renderer()->render_layer_attributes();
 			ImGui::SliderInt("render distance", &rla.render_distance, 0, 100000);
 			ImGui::Checkbox("render layer [0] visible", &rla.visible);
@@ -121,6 +153,9 @@ int main(int argc, char *argv[])
 			
 			// camera settings
 			ImGui::TextWrapped("camera settings:");
+			bval = app.current_scene()->camera()->free_roam();
+			ImGui::Checkbox("free roam", &bval);
+			app.current_scene()->camera()->set_free_roam(bval);
 			fval = app.current_scene()->camera()->speed();
 			ImGui::SliderFloat("speed", &fval, 0.f, 50.f);
 			app.current_scene()->camera()->set_speed(fval);
@@ -129,41 +164,47 @@ int main(int argc, char *argv[])
 			ImGui::SliderFloat("turn speed", &fval, 0.f, 50.f);
 			app.current_scene()->camera()->set_turn_speed(fval);
 
-			ImGui::TextWrapped("position:");
-			v3val = app.current_scene()->camera()->position();
-			ImGui::SetNextItemWidth(60.f);
-			ImGui::InputFloat("x", &v3val.x);
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(60.f);
-			ImGui::InputFloat("y", &v3val.y);
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(60.f);
-			ImGui::InputFloat("z", &v3val.z);
-			app.current_scene()->camera()->set_position(v3val);
-			
-			ImGui::Separator();
-
-			ImGui::TextWrapped("rotation:");
-			v3val = app.current_scene()->camera()->rotation();
-			ImGui::SetNextItemWidth(60.f);
-			ImGui::InputFloat("x", &v3val.x);
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(60.f);
-			ImGui::InputFloat("y", &v3val.y);
-			ImGui::SameLine();
-			ImGui::SetNextItemWidth(60.f);
-			ImGui::InputFloat("z", &v3val.z);
-			app.current_scene()->camera()->set_rotation(v3val);
-			
-			ImGui::Separator();
-			
-			bval = app.window()->fullscreen();
-			ImGui::Checkbox("fullscreen", &bval);
-			app.window()->set_fullscreen(bval);
-			
-			bval = app.current_scene()->camera()->free_roam();
-			ImGui::Checkbox("free roam", &bval);
-			app.current_scene()->camera()->set_free_roam(bval);
+			if(ImGui::CollapsingHeader("camera transform", ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::PushID("cam_position");
+				v3val = app.current_scene()->camera()->position();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("x", &v3val.x);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("y", &v3val.y);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("z", &v3val.z);
+				app.current_scene()->camera()->set_position(v3val);
+				ImGui::PopID();
+				
+				ImGui::PushID("cam_rotation");
+				v3val = app.current_scene()->camera()->rotation();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("x", &v3val.x);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("y", &v3val.y);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("z", &v3val.z);
+				app.current_scene()->camera()->set_rotation(v3val);
+				ImGui::PopID();
+				
+				ImGui::PushID("cam_scale");
+				v3val = app.current_scene()->camera()->scale();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("x", &v3val.x);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("y", &v3val.y);
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(60.f);
+				ImGui::InputFloat("z", &v3val.z);
+				app.current_scene()->camera()->set_scale(v3val);
+				ImGui::PopID();
+			}
 			
 			ImGui::Separator();
 
@@ -176,42 +217,119 @@ int main(int argc, char *argv[])
 					if(ImGui::Button(i->id().c_str()))
 					{
 						mi->set_render_mode(mi->render_mode() == nle::Fill ? nle::Line : nle::Fill);
+						if(selected_obj)
+						{
+							selected_obj = nullptr;
+						}
+						else
+							selected_obj = mi;
 					}
 				}
 			}
 
+			// right window
+			ImGui::SetNextWindowPos(ImVec2(display_size.x -right_window_w, menubar_size.y));
+			ImGui::SetNextWindowSize(ImVec2(right_window_w, display_size.y));
+			if(ImGui::Begin("object properties", nullptr, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				right_window_w = ImGui::GetWindowSize().x;
 
-			ImGui::EndTabBar();
-            
+				if(selected_obj)
+				{
+					char idbuf[64] = {0};
+					strncpy(idbuf, selected_obj->id().c_str(), sizeof(idbuf) - 1);
+					if(ImGui::InputText("id", idbuf, sizeof(idbuf) -1))
+					{
+						if(strlen(idbuf) > 0)
+							selected_obj->set_id(idbuf);
+					}
+
+					if(ImGui::CollapsingHeader("transform", ImGuiTreeNodeFlags_DefaultOpen))
+					{
+						ImGui::Text("position");
+						ImGui::PushID("position");
+						v3val =selected_obj->position();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("x", &v3val.x);
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("y", &v3val.y);
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("z", &v3val.z);
+						selected_obj->set_position(v3val);
+						ImGui::PopID();
+
+						ImGui::Text("rotation");
+						ImGui::PushID("rotation");
+						v3val = selected_obj->rotation();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("x", &v3val.x);
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("y", &v3val.y);
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("z", &v3val.z);
+						selected_obj->set_rotation(v3val);
+						ImGui::PopID();
+
+						ImGui::Text("scale");
+						ImGui::PushID("scale");
+						v3val = selected_obj->scale();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("x", &v3val.x);
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("y", &v3val.y);
+						ImGui::SameLine();
+						ImGui::SetNextItemWidth(60.f);
+						ImGui::InputFloat("z", &v3val.z);
+						selected_obj->set_scale(v3val);
+						ImGui::PopID();
+					}
+				}
+				ImGui::End();
+			}
+
+			// if(selected_obj != nullptr)
+			// {
+			// }
+
             ImGui::End();
         }
 	});
 
 	nle::Material material(4.0f, 32);
 
-	auto rla = app.renderer()->render_layer_attributes(nle::RenderLayer::_0);
-	rla.render_distance = 1000;
-	app.renderer()->set_render_layer_attributes(nle::RenderLayer::_0, rla);
+	auto skybox = nle::Model("models/skybox/skybox.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/skybox/skybox.png", "skybox0"));
+	auto skybox_ins = skybox.create_instance();
+	skybox_ins->set_scale(glm::vec3(200.f));
+	app.current_scene()->add_child(skybox_ins);
 
-	nle::Model mod_minecraft_block("models/Minecraft_Grass_Block_OBJ/Grass_Block.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/Minecraft_Grass_Block_OBJ/Grass_Block_TEX.png", "grass_block"));
-	nle::Model mod_hasan("models/hasan/hasan.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/hasan/hasan.jpg", "hasan"));
-	nle::Model mod_camera("models/obj-camera/source/Obj_Camera.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/obj-camera/textures/Texture_OldCamera_copy.png", "camera"));
-	nle::Model mod_car("models/hugecity/hugecity.obj", nle::DEFAULT_SHADER);
-	// nle::Model mod_car("models/85-cottage_obj/cottage_obj.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/85-cottage_obj/cottage_textures/cottage_diffuse.png", "cottage"));
+	// auto rla = app.renderer()->render_layer_attributes(nle::RenderLayer::_0);
+	// rla.render_distance = 1000;
+	// app.renderer()->set_render_layer_attributes(nle::RenderLayer::_0, rla);
 
-	prdbg("%d blocks created", app.current_scene()->render_objects().size());
+	// nle::Model mod_minecraft_block("models/Minecraft_Grass_Block_OBJ/Grass_Block.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/Minecraft_Grass_Block_OBJ/Grass_Block_TEX.png", "grass_block"));
+	// nle::Model mod_hasan("models/hasan/hasan.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/hasan/hasan.jpg", "hasan"));
+	// nle::Model mod_camera("models/obj-camera/source/Obj_Camera.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/obj-camera/textures/Texture_OldCamera_copy.png", "camera"));
+	// nle::Model mod_car("models/hugecity/hugecity.obj", nle::DEFAULT_SHADER);
+	// // nle::Model mod_car("models/85-cottage_obj/cottage_obj.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/85-cottage_obj/cottage_textures/cottage_diffuse.png", "cottage"));
 
-	hasan = mod_hasan.create_instance();
-	hasan->set_scale(glm::vec3(10.f));
-	app.current_scene()->add_child(hasan);
-	hasan->set_position(app.current_scene()->light()->position());
+	// prdbg("%d blocks created", app.current_scene()->render_objects().size());
 
-	auto *house = mod_car.create_instance();
-	house->set_material_for_meshes(&material);
-	app.current_scene()->add_child(house);
+	// hasan = mod_hasan.create_instance();
+	// hasan->set_scale(glm::vec3(10.f));
+	// app.current_scene()->add_child(hasan);
+	// hasan->set_position(app.current_scene()->light()->position());
+
+	// auto *house = mod_car.create_instance();
+	// house->set_material_for_meshes(&material);
+	// app.current_scene()->add_child(house);
 
 	app.run();
-	prdbg("%s", app.current_scene()->to_json().dump().c_str());
+	// prdbg("%s", app.current_scene()->to_json().dump().c_str());
 
 	return (0);
 }

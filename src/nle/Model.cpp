@@ -1,6 +1,6 @@
 #include "Model.h"
-#include "OBJ_Loader.h"
 
+#include "OBJ_Loader.h"
 #define TINYGLTF_IMPLEMENTATION
 #include "tiny_gltf.h"
 
@@ -37,11 +37,29 @@ namespace nle
         }
         
         m_multimesh = new MultiMesh();
+        prdbg("loaded materials: %lu", loader.LoadedMaterials.size());
 
         for (const auto &mesh : loader.LoadedMeshes)
         {
             std::vector<float> vertices;
             std::vector<unsigned int> indices;
+            
+            Shader *s = m_shader ? m_shader : nle::DEFAULT_SHADER;
+            Texture * t = nullptr;
+            prdbg("loading texture: %s", mesh.MeshMaterial.name.c_str());
+
+            if(!mesh.MeshMaterial.map_Kd.empty())
+            {
+                std::string tex_path;
+                bool is_fname = tex_path.find_last_of('/') == std::string::npos;
+                if(is_fname) // if only file name is given, we seek it in the same directory
+                    tex_path = path.substr(0, path.find_last_of('/')+1) + mesh.MeshMaterial.map_Kd;
+                else
+                    tex_path = mesh.MeshMaterial.map_Kd;
+
+                prdbg("loading texture: %s", tex_path.c_str());
+                t = new Texture(tex_path);
+            }
 
             for (const auto &v : mesh.Vertices)
             {
@@ -51,18 +69,16 @@ namespace nle
                 vertices.push_back(v.Normal.X);
                 vertices.push_back(v.Normal.Y);
                 vertices.push_back(v.Normal.Z);
-                vertices.push_back(m_texture ? v.TextureCoordinate.X : 0.f);
-                vertices.push_back(m_texture ? v.TextureCoordinate.Y : 0.f);
+                vertices.push_back(t ? v.TextureCoordinate.X : 0.f);
+                vertices.push_back(t ? v.TextureCoordinate.Y : 0.f);
             }
-
 
             for (const auto &i : mesh.Indices)
             {
                 indices.push_back(i);
             }
 
-            Shader *s = m_shader ? m_shader : nle::DEFAULT_SHADER;
-            m_multimesh->meshes().push_back(new Mesh(vertices, indices, s, m_texture));
+            m_multimesh->meshes().push_back(new Mesh(vertices, indices, s, t ? t : m_texture));
         }
         return true;
     }
