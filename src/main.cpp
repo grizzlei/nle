@@ -89,16 +89,23 @@ int main(int argc, char *argv[])
             ImGui::EndMainMenuBar();
         }
 
-        if(ImGui::Begin("nice little engine", nullptr, ImGuiWindowFlags_MenuBar))
+        if(ImGui::Begin("nice little engine", nullptr, ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoMove))
         {
             ImGui::TextWrapped("https://github.com/grizzlei/nle");
             ImGui::TextWrapped("hasan karaman - 2023");
             ImGui::TextWrapped("experimental opengl renderer");
             ImGui::Separator();
+			ImGui::BeginTabBar("tbar0");
 
 			glm::vec3 v3val;
 			float fval;
 			bool bval;
+			int ival;
+			// renderer settings
+			auto rla = app.renderer()->render_layer_attributes();
+			ImGui::SliderInt("render distance", &rla.render_distance, 0, 100000);
+			ImGui::Checkbox("render layer [0] visible", &rla.visible);
+			app.renderer()->set_render_layer_attributes(nle::RenderLayer::_0, rla);
 
 			// light settings
 			ImGui::TextWrapped("light settings:");
@@ -110,8 +117,18 @@ int main(int argc, char *argv[])
 			ImGui::SliderFloat("diffuse intensity", &fval, 0.f, 1.f);
 			app.current_scene()->light()->set_diffuse_intensity(fval);
 			
+			ImGui::Separator();
+			
 			// camera settings
 			ImGui::TextWrapped("camera settings:");
+			fval = app.current_scene()->camera()->speed();
+			ImGui::SliderFloat("speed", &fval, 0.f, 50.f);
+			app.current_scene()->camera()->set_speed(fval);
+
+			fval = app.current_scene()->camera()->turn_speed();
+			ImGui::SliderFloat("turn speed", &fval, 0.f, 50.f);
+			app.current_scene()->camera()->set_turn_speed(fval);
+
 			ImGui::TextWrapped("position:");
 			v3val = app.current_scene()->camera()->position();
 			ImGui::SetNextItemWidth(60.f);
@@ -123,23 +140,48 @@ int main(int argc, char *argv[])
 			ImGui::SetNextItemWidth(60.f);
 			ImGui::InputFloat("z", &v3val.z);
 			app.current_scene()->camera()->set_position(v3val);
+			
+			ImGui::Separator();
 
+			ImGui::TextWrapped("rotation:");
+			v3val = app.current_scene()->camera()->rotation();
+			ImGui::SetNextItemWidth(60.f);
+			ImGui::InputFloat("x", &v3val.x);
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(60.f);
+			ImGui::InputFloat("y", &v3val.y);
+			ImGui::SameLine();
+			ImGui::SetNextItemWidth(60.f);
+			ImGui::InputFloat("z", &v3val.z);
+			app.current_scene()->camera()->set_rotation(v3val);
+			
+			ImGui::Separator();
+			
 			bval = app.window()->fullscreen();
 			ImGui::Checkbox("fullscreen", &bval);
 			app.window()->set_fullscreen(bval);
+			
+			bval = app.current_scene()->camera()->free_roam();
+			ImGui::Checkbox("free roam", &bval);
+			app.current_scene()->camera()->set_free_roam(bval);
+			
+			ImGui::Separator();
 
+			ImGui::TextWrapped("scene");
 			for(auto * i : app.current_scene()->children())
 			{
 				nle::MultiMeshInstance *mi = dynamic_cast<nle::MultiMeshInstance*>(i);
 				if(mi)
 				{
-					ImGui::Text("%s", mi->id().c_str());
 					if(ImGui::Button(i->id().c_str()))
 					{
-						mi->set_render_mode(mi->render_mode() == nle::Fill ? nle::Point : nle::Fill);
+						mi->set_render_mode(mi->render_mode() == nle::Fill ? nle::Line : nle::Fill);
 					}
 				}
 			}
+
+
+			ImGui::EndTabBar();
             
             ImGui::End();
         }
@@ -154,7 +196,7 @@ int main(int argc, char *argv[])
 	nle::Model mod_minecraft_block("models/Minecraft_Grass_Block_OBJ/Grass_Block.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/Minecraft_Grass_Block_OBJ/Grass_Block_TEX.png", "grass_block"));
 	nle::Model mod_hasan("models/hasan/hasan.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/hasan/hasan.jpg", "hasan"));
 	nle::Model mod_camera("models/obj-camera/source/Obj_Camera.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/obj-camera/textures/Texture_OldCamera_copy.png", "camera"));
-	nle::Model mod_car("models/1re1lk582a3k-house/house.obj", nle::DEFAULT_SHADER);
+	nle::Model mod_car("models/hugecity/hugecity.obj", nle::DEFAULT_SHADER);
 	// nle::Model mod_car("models/85-cottage_obj/cottage_obj.obj", nle::DEFAULT_SHADER, app.texture_factory()->load_and_get("models/85-cottage_obj/cottage_textures/cottage_diffuse.png", "cottage"));
 
 	prdbg("%d blocks created", app.current_scene()->render_objects().size());
