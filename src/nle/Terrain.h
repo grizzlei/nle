@@ -45,21 +45,10 @@ namespace nle
         void add_child(Object3D *child) override;
         void add_terrain_feature(Object3D *feature, float from_height = 0.0f, float to_height = 10.f);
 
+        Terrain *terrain() const;
+
         nlohmann::json to_json() override;
         void from_json(const nlohmann::json& j) override;
     };
 
-    // class TerrainFeatureLayers
-    // {
-    // private:
-    //     typedef struct {
-    //         Mesh mesh;
-    //         std::vector<Object3D*> instances;
-    //     } feature_t;
-
-    //     Terrain *m_terrain;
-    //     std::vector<Mesh> m_features;
-    // public:
-    //     TerrainFeatureLayers(Terrain *terrain);
-    // };
 } // namespace nle

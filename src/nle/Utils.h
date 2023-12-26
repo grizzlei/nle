@@ -13,7 +13,7 @@
 #if defined(DEBUG)
 #define prdbg(x, ...) (printf("\x1b[33m" x "\x1b[0m\n", ##__VA_ARGS__))
 #else
-#define prdbg(x, ...) ()
+#define prdbg(x, ...)
 #endif
 
 #define prerr(x, ...) (printf("\x1b[31m" x "\x1b[0m\n", ##__VA_ARGS__))

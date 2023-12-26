@@ -8,6 +8,7 @@ namespace nle
         Camera,
         Light,
         MultiMeshInstance,
-        PhysicsObject3D
+        PhysicsObject3D,
+        TerrainInstance
     };
 } // namespace nle

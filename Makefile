@@ -27,7 +27,7 @@ OUTPUT	:= output
 SRC		:= src
 
 # define include directory
-INCLUDE	:= include src
+INCLUDE	:= vendor src
 
 # define lib directory
 LIB		:= lib

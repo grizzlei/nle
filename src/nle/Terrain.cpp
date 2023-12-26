@@ -1,22 +1,9 @@
 #include "Terrain.h"
 #include "Globals.h"
 
-#include "vendor/FastNoiseLite.h"
+#include "FastNoiseLite.h"
 #include "stb_image.h"
 #include <glm/gtc/random.hpp>
-
-// static void map_value_to_color(float value, float min_value, float max_value, float& red, float& green, float& blue) {
-//     if (value < min_value) value = min_value;
-//     if (value > max_value) value = max_value;
-
-//     // Calculate the normalized position of the value within the green range (80%)
-//     float t = (value - min_value) / (0.8f * (max_value - min_value));
-
-//     // Map the value to an RGB color within the specified range
-//     red = 0.6f + 0.4f * t;  // Red component (from 0.6 to 1.0)
-//     green = 0.8f;           // Green component (fixed at 0.8 for green)
-//     blue = 0.2f;    
-// }
 
 static void map_value_to_color(float value, float min_value, float max_value, float& red, float& green, float& blue) {
     if (value < min_value) value = min_value;
@@ -37,14 +24,6 @@ static void map_value_to_color(float value, float min_value, float max_value, fl
     {
         red = 0.478f; green = 0.352f; blue = 0.0f;
     }
-
-    // // Calculate the normalized position of the value within the green range (80%)
-    // float t = (value - min_value) / (0.8f * (max_value - min_value));
-
-    // // Map the value to an RGB color within the specified range
-    // red = 0.6f + 0.4f * t;  // Red component (from 0.6 to 1.0)
-    // green = 0.8f;           // Green component (fixed at 0.8 for green)
-    // blue = 0.2f;    
 }
 
 namespace nle
@@ -126,10 +105,10 @@ namespace nle
         }
 
         // Perform bilinear interpolation
-        float q11 = m_heightmap[m_width * z0 + x0]; //heightmap[z0][x0];
-        float q12 = m_heightmap[m_width * z1 + x0];//heightmap[z1][x0];
-        float q21 = m_heightmap[m_width * z0 + x1];//heightmap[z0][x1];
-        float q22 = m_heightmap[m_width * z1 + x1];//heightmap[z1][x1];
+        float q11 = m_heightmap[m_width * z0 + x0];
+        float q12 = m_heightmap[m_width * z1 + x0];
+        float q21 = m_heightmap[m_width * z0 + x1];
+        float q22 = m_heightmap[m_width * z1 + x1];
 
         float fx1 = x - static_cast<float>(x0);
         float fz1 = z - static_cast<float>(z0);
@@ -235,6 +214,7 @@ namespace nle
     TerrainInstance::TerrainInstance(Terrain * terrain)
         : MeshInstance(terrain->m_mesh), m_terrain(terrain)
     {
+        m_type = ObjectType::TerrainInstance;
     }
 
     void TerrainInstance::add_child(Object3D *child)
@@ -269,13 +249,27 @@ namespace nle
 
     nlohmann::json TerrainInstance::to_json()
     {
-        auto ret = Object3D::to_json();
-        
+        auto ret = RenderObject3D::to_json();
+        ret["heightmap"] = m_terrain->m_heightmap;
+        ret["heightmap_width"] = m_terrain->m_width;
+        ret["heightmap_height"] = m_terrain->m_height;
+        ret["height_multiplier"] = m_terrain->m_height_multiplier;
         return ret;
     }
 
     void TerrainInstance::from_json(const nlohmann::json &j)
     {
+        Object3D::from_json(j);
+        m_terrain->m_heightmap = j["heightmap"].get<std::vector<float>>();
+        m_terrain->m_width = j["heightmap_width"];
+        m_terrain->m_height = j["heightmap_height"];
+        m_terrain->m_height_multiplier = j["height_multiplier"];
+        m_terrain->generate_terrain_mesh();
+    }
+
+    Terrain *TerrainInstance::terrain() const
+    {
+        return m_terrain;
     }
 
 } // namespace nle
